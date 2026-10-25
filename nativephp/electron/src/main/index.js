@@ -1,10 +1,21 @@
 import NativePHP from '#plugin';
-import { app, BrowserWindow } from 'electron';
+import { app } from 'electron';
 import path from 'path';
 import { createSplash } from './splash.js';
 // Inherit User's PATH in Process & ChildProcess
 import fixPath from 'fix-path';
 fixPath();
+
+function ignoreClosedOutputPipe(error) {
+    if (error?.code !== 'EPIPE') {
+        throw error;
+    }
+}
+
+// The Windows installer may launch Electron after its output pipe has closed.
+// Ignoring EPIPE keeps the desktop process alive while preserving other errors.
+process.stdout?.on('error', ignoreClosedOutputPipe);
+process.stderr?.on('error', ignoreClosedOutputPipe);
 
 const buildPath = path.resolve(import.meta.dirname, import.meta.env.MAIN_VITE_NATIVEPHP_BUILD_PATH);
 const defaultIcon = path.join(buildPath, 'icon.png');

@@ -70,12 +70,13 @@ export default {
     copyright: appCopyright,
     directories: {
         buildResources: 'build',
-        output: isBuilding ? join(process.env.APP_PATH, 'nativephp', 'electron', 'dist') : undefined,
+        output: isBuilding ? join(process.env.APP_PATH, 'nativephp', 'electron', 'dist', appVersion) : undefined,
     },
     files: [
         '!**/.vscode/*',
         '!src/*',
-        '!dist/*',
+        '!dist/**',
+        '!dist-*/**',
         '!electron.vite.config.{js,ts,mjs,cjs}',
         '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}',
         '!{.env,.env.*,.npmrc,pnpm-lock.yaml}',
@@ -133,10 +134,16 @@ export default {
         createDesktopShortcut: 'always',
         deleteAppDataOnUninstall: deleteAppDataOnUninstall,
     },
-    protocols: {
-        name: deepLinkProtocol,
-        schemes: [deepLinkProtocol],
-    },
+    ...(deepLinkProtocol
+        ? {
+              protocols: [
+                  {
+                      name: deepLinkProtocol,
+                      schemes: [deepLinkProtocol],
+                  },
+              ],
+          }
+        : {}),
     mac: {
         entitlementsInherit: 'build/entitlements.mac.plist',
         artifactName: appName + '-${version}-${arch}.${ext}',

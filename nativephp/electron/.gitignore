@@ -4,3 +4,4 @@ out
 *.log
 !build
 dist
+dist-*

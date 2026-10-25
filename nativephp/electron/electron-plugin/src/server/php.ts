@@ -201,6 +201,7 @@ function callPhp(args, options, phpIniSettings = {}) {
             ...process.env,
             ...options.env,
         },
+        windowsHide: process.platform === 'win32',
     });
 }
 

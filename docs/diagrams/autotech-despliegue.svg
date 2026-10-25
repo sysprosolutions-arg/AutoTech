@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1220" viewBox="0 0 1800 1220" role="img" aria-labelledby="title desc">
+  <title id="title">AutoTech S.A. — Diagrama de Despliegue</title>
+  <desc id="desc">Nodos y artefactos de los escenarios de desarrollo web local y demo instalable en Windows.</desc>
+  <defs>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b3b43"/><stop offset="1" stop-color="#14616a"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.14"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#38545a"/></marker>
+    <style>
+      .title{font:700 32px 'Segoe UI',Arial,sans-serif;fill:#fff}.subtitle{font:400 16px 'Segoe UI',Arial,sans-serif;fill:#d7eef0}
+      .zone{fill:#f8fbfb;stroke:#173f46;stroke-width:2.5}.zoneTitle{font:700 20px 'Segoe UI',Arial,sans-serif;fill:#123940}
+      .node{fill:#fff;stroke:#355b61;stroke-width:2;filter:url(#shadow)}.runtime{fill:#e7f6f3;stroke:#147d72;stroke-width:2}.artifact{fill:#fffaf0;stroke:#c78b22;stroke-width:2}.db{fill:#edf2ff;stroke:#5269a6;stroke-width:2}
+      .ctitle{font:700 17px 'Segoe UI',Arial,sans-serif;fill:#17363b}.small{font:400 14px 'Segoe UI',Arial,sans-serif;fill:#49656a}.tiny{font:600 12px 'Segoe UI',Arial,sans-serif;fill:#5a7377}
+      .link{fill:none;stroke:#38545a;stroke-width:2.2;marker-end:url(#arrow)}.sync{fill:none;stroke:#38545a;stroke-width:2.2;stroke-dasharray:8 6;marker-end:url(#arrow)}.label{font:600 13px 'Segoe UI',Arial,sans-serif;fill:#27474d}
+      .note{fill:#eef4f5;stroke:#91a8ac;stroke-width:1.5}.legend{font:500 14px 'Segoe UI',Arial,sans-serif;fill:#2d4d52}
+    </style>
+  </defs>
+  <rect width="1800" height="1220" fill="#edf3f3"/>
+  <rect width="1800" height="92" fill="url(#header)"/>
+  <text x="70" y="45" class="title">AutoTech S.A. — Diagrama de Despliegue</text>
+  <text x="70" y="72" class="subtitle">Dos configuraciones reales: desarrollo web local y demo de escritorio autónoma</text>
+
+  <!-- Repositorio -->
+  <rect x="665" y="125" width="470" height="105" rx="12" class="node"/>
+  <text x="900" y="158" text-anchor="middle" class="tiny">«cloud service»</text>
+  <text x="900" y="184" text-anchor="middle" class="ctitle">GitHub · sysprosolutionsarg/AutoTech</text>
+  <text x="900" y="208" text-anchor="middle" class="small">repositorio privado · rama main · historial Git</text>
+
+  <!-- Desarrollo -->
+  <rect x="55" y="280" width="805" height="790" rx="18" class="zone"/>
+  <text x="457" y="317" text-anchor="middle" class="zoneTitle">«device» Equipo de desarrollo — Windows 11</text>
+
+  <rect x="95" y="360" width="300" height="120" rx="10" class="node"/>
+  <text x="245" y="392" text-anchor="middle" class="tiny">«development environment»</text>
+  <text x="245" y="420" text-anchor="middle" class="ctitle">Visual Studio Code</text>
+  <text x="245" y="447" text-anchor="middle" class="small">Git · Composer · npm</text>
+  <text x="245" y="468" text-anchor="middle" class="tiny">código fuente del proyecto</text>
+
+  <rect x="520" y="360" width="295" height="120" rx="10" class="node"/>
+  <text x="667" y="392" text-anchor="middle" class="tiny">«client execution environment»</text>
+  <text x="667" y="420" text-anchor="middle" class="ctitle">Navegador web</text>
+  <text x="667" y="447" text-anchor="middle" class="small">Chrome / Edge</text>
+
+  <rect x="95" y="545" width="720" height="275" rx="13" class="runtime"/>
+  <text x="455" y="579" text-anchor="middle" class="tiny">«execution environment»</text>
+  <text x="455" y="608" text-anchor="middle" class="ctitle">PHP 8.5 + Laravel 13</text>
+  <rect x="135" y="650" width="205" height="105" rx="8" class="artifact"/>
+  <text x="237" y="681" text-anchor="middle" class="tiny">«artifact»</text><text x="237" y="708" text-anchor="middle" class="ctitle">AutoTech</text><text x="237" y="733" text-anchor="middle" class="small">MVC + módulos</text>
+  <rect x="355" y="650" width="205" height="105" rx="8" class="artifact"/>
+  <text x="457" y="681" text-anchor="middle" class="tiny">«artifact»</text><text x="457" y="708" text-anchor="middle" class="ctitle">Assets Vite</text><text x="457" y="733" text-anchor="middle" class="small">Bootstrap + JS</text>
+  <rect x="575" y="650" width="200" height="105" rx="8" class="artifact"/>
+  <text x="675" y="681" text-anchor="middle" class="tiny">«artifact»</text><text x="675" y="708" text-anchor="middle" class="ctitle">Sesiones / cola</text><text x="675" y="733" text-anchor="middle" class="small">driver database</text>
+
+  <rect x="175" y="875" width="560" height="135" rx="12" class="db"/>
+  <text x="455" y="909" text-anchor="middle" class="tiny">«database server»</text>
+  <text x="455" y="938" text-anchor="middle" class="ctitle">MySQL 8 o MariaDB 11</text>
+  <text x="455" y="965" text-anchor="middle" class="small">Base autotech · esquema relacional central</text>
+  <text x="455" y="990" text-anchor="middle" class="tiny">puerto configurable 3306 / 3307</text>
+
+  <!-- Demo -->
+  <rect x="940" y="280" width="805" height="790" rx="18" class="zone"/>
+  <text x="1342" y="317" text-anchor="middle" class="zoneTitle">«device» PC del evaluador — Windows 10/11 x64</text>
+
+  <rect x="985" y="360" width="715" height="130" rx="12" class="artifact"/>
+  <text x="1342" y="392" text-anchor="middle" class="tiny">«installer artifact»</text>
+  <text x="1342" y="421" text-anchor="middle" class="ctitle">AutoTech-0.1.1-setup.exe</text>
+  <text x="1342" y="448" text-anchor="middle" class="small">NSIS · instala la aplicación sin clonar GitHub</text>
+  <text x="1342" y="470" text-anchor="middle" class="tiny">no requiere instalar PHP, Composer, Node.js ni MySQL</text>
+
+  <rect x="985" y="545" width="715" height="275" rx="13" class="runtime"/>
+  <text x="1342" y="579" text-anchor="middle" class="tiny">«execution environment»</text>
+  <text x="1342" y="608" text-anchor="middle" class="ctitle">NativePHP Desktop 2.4</text>
+  <rect x="1025" y="650" width="200" height="105" rx="8" class="node"/>
+  <text x="1125" y="681" text-anchor="middle" class="tiny">«runtime»</text><text x="1125" y="708" text-anchor="middle" class="ctitle">Electron 40</text><text x="1125" y="733" text-anchor="middle" class="small">ventana Chromium</text>
+  <rect x="1242" y="650" width="200" height="105" rx="8" class="node"/>
+  <text x="1342" y="681" text-anchor="middle" class="tiny">«runtime»</text><text x="1342" y="708" text-anchor="middle" class="ctitle">PHP embebido</text><text x="1342" y="733" text-anchor="middle" class="small">Laravel local</text>
+  <rect x="1459" y="650" width="200" height="105" rx="8" class="artifact"/>
+  <text x="1559" y="681" text-anchor="middle" class="tiny">«artifact»</text><text x="1559" y="708" text-anchor="middle" class="ctitle">AutoTech</text><text x="1559" y="733" text-anchor="middle" class="small">bundle compilado</text>
+
+  <rect x="1060" y="875" width="565" height="135" rx="12" class="db"/>
+  <text x="1342" y="909" text-anchor="middle" class="tiny">«embedded database»</text>
+  <text x="1342" y="938" text-anchor="middle" class="ctitle">SQLite persistente</text>
+  <text x="1342" y="965" text-anchor="middle" class="small">archivo por usuario en AppData</text>
+  <text x="1342" y="990" text-anchor="middle" class="tiny">migraciones y seeder en primer inicio</text>
+
+  <!-- Conexiones -->
+  <path d="M730 230 C610 250 350 270 245 360" class="sync"/><text x="420" y="265" class="label">HTTPS / Git</text>
+  <path d="M1070 230 C1190 250 1300 285 1342 360" class="sync"/><text x="1190" y="265" class="label">artefacto de release</text>
+  <path d="M395 420 H520" class="sync"/><text x="427" y="402" class="label">npm / Vite</text>
+  <path d="M667 480 V545" class="link"/><text x="682" y="520" class="label">HTTP 127.0.0.1:8000</text>
+  <path d="M455 820 V875" class="link"/><text x="470" y="854" class="label">PDO MySQL/MariaDB</text>
+  <path d="M1125 755 C1125 800 1240 810 1342 820" class="link"/><text x="1030" y="807" class="label">HTTP 127.0.0.1:8100</text>
+  <path d="M1342 755 V875" class="link"/><text x="1358" y="842" class="label">PDO SQLite</text>
+  <path d="M1559 755 C1559 790 1450 805 1342 820" class="sync"/><text x="1484" y="799" class="label">carga local</text>
+
+  <rect x="95" y="1110" width="1610" height="70" rx="10" class="note"/>
+  <text x="120" y="1140" class="legend">Desarrollo: servidor web y base relacional configurables mediante .env.</text>
+  <text x="900" y="1140" class="legend">Demo: todos los servicios y datos permanecen dentro de la PC del evaluador.</text>
+  <text x="120" y="1163" class="legend">No existe todavía un despliegue remoto de staging o producción: queda fuera del incremento actual.</text>
+</svg>

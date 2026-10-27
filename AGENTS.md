@@ -98,4 +98,13 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Laravel can be deployed using [Laravel Cloud](https://cloud.laravel.com/), which is the fastest way to deploy and scale production Laravel applications.
 - Activate the `deploying-to-cloud` skill whenever deploying to Laravel Cloud, configuring Cloud environments or resources, using the Cloud CLI, or troubleshooting Cloud deployments.
 
+=== git workflow rules ===
+
+# Git Workflow
+
+- Every Jira or Sprint task, from any Sprint, must be developed in a new branch created before changing code, tests, configuration, diagrams, or documentation.
+- Never work directly on `main`. Start each task from an up-to-date `main` branch and keep one task per branch.
+- Include the Jira issue key in the branch name when one exists, using a descriptive name such as `feature/ATSA-123-short-description`, `fix/ATSA-123-short-description`, or `docs/ATSA-123-short-description`.
+- Commit and push the task branch. Integrate it into `main` only after its verification and review are complete.
+
 </laravel-boost-guidelines>

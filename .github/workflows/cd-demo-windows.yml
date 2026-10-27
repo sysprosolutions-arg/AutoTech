@@ -1,0 +1,94 @@
+name: CD - Demo Windows
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Versión del instalador (por ejemplo, 0.2.0)
+        required: true
+        default: 0.1.1
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: demo-windows-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  installer:
+    name: Instalador Windows x64
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+          extensions: mbstring, pdo_sqlite, sqlite3
+          tools: composer:v2
+        env:
+          update: true
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Instalar dependencias PHP
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Instalar dependencias web
+        run: npm ci
+
+      - name: Preparar entorno de compilación
+        shell: pwsh
+        run: |
+          Copy-Item .env.example .env
+          php artisan key:generate --no-interaction
+
+          if ('${{ github.event_name }}' -eq 'workflow_dispatch') {
+              $version = '${{ inputs.version }}'
+          } else {
+              $version = '${{ github.ref_name }}'.TrimStart('v')
+          }
+
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+              throw "La versión '$version' debe usar el formato X.Y.Z."
+          }
+
+          "APP_ENV=production" >> $env:GITHUB_ENV
+          "APP_DEBUG=false" >> $env:GITHUB_ENV
+          "NATIVEPHP_APP_VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Verificar formato PHP
+        run: vendor/bin/pint --test
+
+      - name: Compilar recursos web
+        run: npm run build
+
+      - name: Ejecutar pruebas automatizadas
+        run: php artisan test
+
+      - name: Generar instalador
+        run: php artisan native:build win x64 --no-interaction
+
+      - name: Publicar instalador como artefacto
+        uses: actions/upload-artifact@v7
+        with:
+          name: AutoTech-${{ env.NATIVEPHP_APP_VERSION }}-Windows-x64
+          path: nativephp/electron/dist/*-setup.exe
+          if-no-files-found: error
+          retention-days: 14
+

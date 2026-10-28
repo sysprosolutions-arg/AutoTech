@@ -46,7 +46,7 @@ return [
     /**
      * The Website of your application.
      */
-    'website' => env('NATIVEPHP_APP_WEBSITE', 'https://github.com/sysprosolutionsarg/AutoTech'),
+    'website' => env('NATIVEPHP_APP_WEBSITE', 'https://github.com/sysprosolutions-arg/AutoTech'),
 
     /**
      * The default service provider for your application. This provider

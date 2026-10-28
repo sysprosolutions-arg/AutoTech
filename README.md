@@ -1,5 +1,7 @@
 # AutoTech S.A.
 
+[![CI](https://github.com/sysprosolutions-arg/AutoTech/actions/workflows/ci.yml/badge.svg)](https://github.com/sysprosolutions-arg/AutoTech/actions/workflows/ci.yml)
+
 Sistema de información para la gestión integral de clientes, proveedores, repuestos, compras, reparaciones, turnos y facturación de un taller mecánico. La reparación y su orden de trabajo constituyen la transacción principal del dominio.
 
 ## Estado del incremento
@@ -71,6 +73,14 @@ php artisan native:build win x64
 
 El instalador generado queda fuera del control de versiones. El procedimiento completo está en [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
+## CI/CD
+
+- **Integración continua:** el workflow `CI` se ejecuta en cada push y pull request hacia `main`. Instala dependencias reproducibles, verifica el formato PHP, compila los recursos web y ejecuta las pruebas automatizadas.
+- **Entrega continua:** el workflow `CD - Demo Windows` puede ejecutarse manualmente o mediante una etiqueta `vX.Y.Z`. Verifica el proyecto, construye el instalador x64 y lo publica durante 14 días como artefacto descargable de GitHub Actions.
+- **Trazabilidad con Jira:** el repositorio se vincula mediante GitHub for Atlassian. La clave de la tarea debe incluirse en el nombre de la rama, los commits y el título del pull request; por ejemplo, `feature/ATSA-50-consultar-turno`.
+
+Los workflows y sus resultados se consultan en [GitHub Actions](https://github.com/sysprosolutions-arg/AutoTech/actions).
+
 ## Estrategia Git
 
 - `main`: versión estable y demostrable.
@@ -78,6 +88,7 @@ El instalador generado queda fuera del control de versiones. El procedimiento co
 - Pull request hacia `main`, revisión y pruebas antes de integrar.
 - Commits breves en modo imperativo, incluyendo la clave Jira cuando corresponda; por ejemplo: `ATSA-7 implementar autenticación por sesión`.
 - No se versionan `.env`, contraseñas, dependencias, bases locales ni instaladores.
+- Cada tarea de cualquier Sprint comienza en una rama nueva creada desde `main` actualizado; nunca se desarrolla directamente en `main`.
 
 ## Equipo
 
@@ -88,4 +99,4 @@ El instalador generado queda fuera del control de versiones. El procedimiento co
 | Analista Funcional | Diego |
 | Desarrollador | Cristian |
 
-Organización: [SysPro Solutions ARG](https://github.com/sysprosolutionsarg) · Proyecto Jira: `ATSA` · Espacio Confluence: `ATS`.
+Organización: [SysPro Solutions ARG](https://github.com/sysprosolutions-arg) · Proyecto Jira: `ATSA` · Espacio Confluence: `ATS`.

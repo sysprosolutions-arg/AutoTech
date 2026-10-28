@@ -66,6 +66,24 @@ Se recomienda instalar extensiones de PHP, Blade, EditorConfig y ESLint compatib
 
 Una compilación sin firma puede mostrar la advertencia de reputación de Windows. La firma de código se evaluará para una distribución real; no es necesaria para el TPI local.
 
+## Automatización CI/CD en GitHub
+
+El repositorio utiliza GitHub Actions para que las verificaciones sean repetibles y queden registradas como evidencia:
+
+- `.github/workflows/ci.yml` se ejecuta en cada push y pull request hacia `main`. Ejecuta Pint, compila Vite y corre las pruebas automatizadas con SQLite en memoria.
+- `.github/workflows/cd-demo-windows.yml` se ejecuta manualmente o al publicar una etiqueta con formato `vX.Y.Z`. Genera el instalador Windows x64 y lo conserva durante 14 días como artefacto descargable.
+
+Para generar una entrega versionada desde Git:
+
+```powershell
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+Antes de crear la etiqueta, la versión debe encontrarse integrada y verificada en `main`. El instalador no se agrega al repositorio.
+
+GitHub for Atlassian proporciona la trazabilidad con Jira. Toda rama, commit y título de pull request debe contener la clave Jira correspondiente.
+
 ### Límites conocidos de la demo
 
 - El instalador académico no está firmado y el código PHP no usa el servicio comercial de ofuscación de NativePHP.

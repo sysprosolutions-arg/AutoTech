@@ -23,8 +23,8 @@
   <!-- Repositorio -->
   <rect x="665" y="125" width="470" height="105" rx="12" class="node"/>
   <text x="900" y="158" text-anchor="middle" class="tiny">«cloud service»</text>
-  <text x="900" y="184" text-anchor="middle" class="ctitle">GitHub · sysprosolutionsarg/AutoTech</text>
-  <text x="900" y="208" text-anchor="middle" class="small">repositorio privado · rama main · historial Git</text>
+  <text x="900" y="184" text-anchor="middle" class="ctitle">GitHub · sysprosolutions-arg/AutoTech</text>
+  <text x="900" y="208" text-anchor="middle" class="small">repositorio público · rama main · historial Git</text>
 
   <!-- Desarrollo -->
   <rect x="55" y="280" width="805" height="790" rx="18" class="zone"/>

@@ -1,6 +1,6 @@
 # AutoTech S.A.
 
-[![CI](https://github.com/sysprosolutionsarg/AutoTech/actions/workflows/ci.yml/badge.svg)](https://github.com/sysprosolutionsarg/AutoTech/actions/workflows/ci.yml)
+[![CI](https://github.com/sysprosolutions-arg/AutoTech/actions/workflows/ci.yml/badge.svg)](https://github.com/sysprosolutions-arg/AutoTech/actions/workflows/ci.yml)
 
 Sistema de información para la gestión integral de clientes, proveedores, repuestos, compras, reparaciones, turnos y facturación de un taller mecánico. La reparación y su orden de trabajo constituyen la transacción principal del dominio.
 
@@ -79,7 +79,7 @@ El instalador generado queda fuera del control de versiones. El procedimiento co
 - **Entrega continua:** el workflow `CD - Demo Windows` puede ejecutarse manualmente o mediante una etiqueta `vX.Y.Z`. Verifica el proyecto, construye el instalador x64 y lo publica durante 14 días como artefacto descargable de GitHub Actions.
 - **Trazabilidad con Jira:** el repositorio se vincula mediante GitHub for Atlassian. La clave de la tarea debe incluirse en el nombre de la rama, los commits y el título del pull request; por ejemplo, `feature/ATSA-50-consultar-turno`.
 
-Los workflows y sus resultados se consultan en [GitHub Actions](https://github.com/sysprosolutionsarg/AutoTech/actions).
+Los workflows y sus resultados se consultan en [GitHub Actions](https://github.com/sysprosolutions-arg/AutoTech/actions).
 
 ## Estrategia Git
 
@@ -99,4 +99,4 @@ Los workflows y sus resultados se consultan en [GitHub Actions](https://github.c
 | Analista Funcional | Diego |
 | Desarrollador | Cristian |
 
-Organización: [SysPro Solutions ARG](https://github.com/sysprosolutionsarg) · Proyecto Jira: `ATSA` · Espacio Confluence: `ATS`.
+Organización: [SysPro Solutions ARG](https://github.com/sysprosolutions-arg) · Proyecto Jira: `ATSA` · Espacio Confluence: `ATS`.

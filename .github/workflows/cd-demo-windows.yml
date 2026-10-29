@@ -90,7 +90,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: AutoTech-${{ env.NATIVEPHP_APP_VERSION }}-Windows-x64
-          path: nativephp/electron/dist/*-setup.exe
+          path: nativephp/electron/dist/**/*-setup.exe
           if-no-files-found: error
           retention-days: 14
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TurnoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,4 +19,9 @@ Route::middleware('guest')->group(function (): void {
 Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+    Route::middleware('role:administrador,turnos')->prefix('turnos')->name('turnos.')->group(function (): void {
+        Route::get('/crear', [TurnoController::class, 'create'])->name('create');
+        Route::post('/', [TurnoController::class, 'store'])->name('store');
+    });
 });

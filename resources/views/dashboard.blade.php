@@ -35,13 +35,16 @@
     <div class="row g-3">
         @foreach ($modules as $module)
             <div class="col-sm-6 col-xl-4">
-                <article class="module-card">
+                <article class="module-card position-relative">
                     <div class="d-flex align-items-start justify-content-between">
                         <div class="module-icon {{ $module['color'] }}"><i class="bi {{ $module['icon'] }}" aria-hidden="true"></i></div>
-                        <span class="module-state">Próximamente</span>
+                        <span class="module-state">{{ isset($module['route']) ? 'Disponible' : 'Próximamente' }}</span>
                     </div>
                     <h3>{{ $module['name'] }}</h3>
                     <p>{{ $module['description'] }}</p>
+                    @isset($module['route'])
+                        <a class="stretched-link" href="{{ route($module['route']) }}"><span class="visually-hidden">Abrir {{ $module['name'] }}</span></a>
+                    @endisset
                 </article>
             </div>
         @endforeach

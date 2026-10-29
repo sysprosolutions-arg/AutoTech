@@ -8,6 +8,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="app-body">
+    @php($currentUser = auth()->user())
     <aside class="app-sidebar" data-app-sidebar>
         <a class="sidebar-brand" href="{{ route('dashboard') }}">
             <span class="brand-mark" aria-hidden="true">AT</span>
@@ -16,24 +17,31 @@
 
         <div class="sidebar-section-label">Operación</div>
         <nav class="sidebar-nav" aria-label="Navegación principal">
-            <a class="sidebar-link active" href="{{ route('dashboard') }}" aria-current="page">
+            <a class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}" @if(request()->routeIs('dashboard')) aria-current="page" @endif>
                 <i class="bi bi-grid-1x2" aria-hidden="true"></i>
                 <span>Inicio</span>
             </a>
             @foreach ([
-                ['Clientes', 'bi-people'],
-                ['Proveedores', 'bi-truck'],
-                ['Repuestos', 'bi-gear'],
-                ['Compras', 'bi-cart3'],
-                ['Reparaciones', 'bi-tools'],
-                ['Turnos', 'bi-calendar3'],
-                ['Facturación', 'bi-receipt'],
-            ] as [$label, $icon])
-                <span class="sidebar-link disabled" aria-disabled="true">
-                    <i class="bi {{ $icon }}" aria-hidden="true"></i>
-                    <span>{{ $label }}</span>
-                    <span class="sidebar-link-badge">Próximo</span>
-                </span>
+                ['Clientes', 'bi-people', null],
+                ['Proveedores', 'bi-truck', null],
+                ['Repuestos', 'bi-gear', null],
+                ['Compras', 'bi-cart3', null],
+                ['Reparaciones', 'bi-tools', null],
+                ['Turnos', 'bi-calendar3', 'turnos.create'],
+                ['Facturación', 'bi-receipt', null],
+            ] as [$label, $icon, $routeName])
+                @if ($routeName)
+                    <a class="sidebar-link {{ request()->routeIs('turnos.*') ? 'active' : '' }}" href="{{ route($routeName) }}" @if(request()->routeIs('turnos.*')) aria-current="page" @endif>
+                        <i class="bi {{ $icon }}" aria-hidden="true"></i>
+                        <span>{{ $label }}</span>
+                    </a>
+                @else
+                    <span class="sidebar-link disabled" aria-disabled="true">
+                        <i class="bi {{ $icon }}" aria-hidden="true"></i>
+                        <span>{{ $label }}</span>
+                        <span class="sidebar-link-badge">Próximo</span>
+                    </span>
+                @endif
             @endforeach
         </nav>
 
@@ -51,15 +59,15 @@
                 </button>
                 <div class="topbar-context">
                     <small>Área de trabajo</small>
-                    <strong>Panel general</strong>
+                    <strong>@yield('context', 'Panel general')</strong>
                 </div>
             </div>
 
             <div class="user-chip">
-                <div class="user-avatar" aria-hidden="true">{{ str($user->name)->substr(0, 1)->upper() }}</div>
+                <div class="user-avatar" aria-hidden="true">{{ str($currentUser?->name)->substr(0, 1)->upper() }}</div>
                 <div class="user-meta">
-                    <strong>{{ $user->name }}</strong>
-                    <small>{{ $user->roles->first()?->display_name ?? 'Usuario autorizado' }}</small>
+                    <strong>{{ $currentUser?->name }}</strong>
+                    <small>{{ $currentUser?->roles->first()?->display_name ?? 'Usuario autorizado' }}</small>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -75,5 +83,6 @@
             @yield('content')
         </div>
     </main>
+    @stack('scripts')
 </body>
 </html>

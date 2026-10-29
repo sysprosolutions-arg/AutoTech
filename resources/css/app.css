@@ -30,7 +30,9 @@ body {
 }
 
 button,
-input {
+input,
+select,
+textarea {
     font: inherit;
 }
 
@@ -547,6 +549,62 @@ input {
     border: 1px solid var(--at-border);
     border-radius: var(--at-radius-md);
     padding: 1.4rem;
+}
+
+.content-card {
+    background: #fff;
+    border: 1px solid var(--at-border);
+    border-radius: var(--at-radius-md);
+    padding: clamp(1.2rem, 3vw, 1.8rem);
+}
+
+.form-section-heading {
+    align-items: flex-start;
+    border-bottom: 1px solid var(--at-border);
+    display: flex;
+    gap: 0.9rem;
+    margin-bottom: 1.4rem;
+    padding-bottom: 1.1rem;
+}
+
+.form-section-heading h2 {
+    font-size: 1rem;
+    font-weight: 750;
+    margin: 0 0 0.22rem;
+}
+
+.form-section-heading p {
+    color: var(--at-muted);
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.form-section-icon {
+    align-items: center;
+    background: var(--at-teal-soft);
+    border-radius: 11px;
+    color: var(--at-teal-dark);
+    display: flex;
+    flex: 0 0 auto;
+    height: 40px;
+    justify-content: center;
+    width: 40px;
+}
+
+.required-mark {
+    color: var(--at-danger);
+}
+
+.form-control,
+.form-select {
+    border-color: var(--at-border);
+    min-height: 46px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--at-teal);
+    box-shadow: 0 0 0 0.2rem rgba(23, 107, 112, 0.12);
 }
 
 .roadmap-step {

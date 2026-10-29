@@ -18,7 +18,7 @@ class ReparacionesMasterDataSeeder extends Seeder
             ['codigo' => 'correctiva', 'nombre' => 'Reparación correctiva', 'descripcion' => 'Corrección de una falla diagnosticada.'],
             ['codigo' => 'diagnostico', 'nombre' => 'Diagnóstico', 'descripcion' => 'Evaluación técnica y detección de fallas.'],
             ['codigo' => 'inspeccion', 'nombre' => 'Inspección', 'descripcion' => 'Control técnico sin sustitución obligatoria de componentes.'],
-        ])->each(fn (array $tipo): TipoReparacion => TipoReparacion::query()->updateOrCreate(
+        ])->each(fn (array $tipo): TipoReparacion => TipoReparacion::query()->firstOrCreate(
             ['codigo' => $tipo['codigo']],
             [...$tipo, 'activo' => true],
         ));
@@ -27,7 +27,7 @@ class ReparacionesMasterDataSeeder extends Seeder
             ['codigo' => 'en-proceso', 'nombre' => 'En proceso'],
             ['codigo' => 'finalizada', 'nombre' => 'Finalizada'],
             ['codigo' => 'cancelada', 'nombre' => 'Cancelada'],
-        ])->each(fn (array $estado): EstadoReparacion => EstadoReparacion::query()->updateOrCreate(
+        ])->each(fn (array $estado): EstadoReparacion => EstadoReparacion::query()->firstOrCreate(
             ['codigo' => $estado['codigo']],
             $estado,
         ));

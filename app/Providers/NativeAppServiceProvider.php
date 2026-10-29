@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Database\Seeders\PresupuestosMasterDataSeeder;
+use Database\Seeders\ReparacionesMasterDataSeeder;
+use Database\Seeders\TurnosMasterDataSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Native\Desktop\Contracts\ProvidesPhpIni;
@@ -39,10 +42,25 @@ class NativeAppServiceProvider implements ProvidesPhpIni
 
     private function seedDesktopDemoIfNecessary(): void
     {
-        if (! Schema::hasTable('users') || User::query()->exists()) {
+        if (! Schema::hasTable('users')) {
             return;
         }
 
-        Artisan::call('db:seed', ['--force' => true]);
+        if (! User::query()->exists()) {
+            Artisan::call('db:seed', ['--force' => true]);
+
+            return;
+        }
+
+        foreach ([
+            TurnosMasterDataSeeder::class,
+            PresupuestosMasterDataSeeder::class,
+            ReparacionesMasterDataSeeder::class,
+        ] as $seeder) {
+            Artisan::call('db:seed', [
+                '--class' => $seeder,
+                '--force' => true,
+            ]);
+        }
     }
 }

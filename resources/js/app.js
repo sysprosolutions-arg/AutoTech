@@ -83,4 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
         toggle?.addEventListener('change', updateAvailability);
         updateAvailability();
     });
+
+    document.querySelector('[data-print-report]')?.addEventListener('click', () => {
+        window.print();
+    });
 });

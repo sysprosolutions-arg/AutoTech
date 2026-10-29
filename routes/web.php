@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InformeDiarioReparacionController;
 use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\PresupuestoDecisionController;
 use App\Http\Controllers\ReparacionController;
@@ -39,6 +40,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::middleware('role:administrador,reparacion')->prefix('reparaciones')->name('reparaciones.')->group(function (): void {
         Route::get('/', [ReparacionController::class, 'index'])->name('index');
+        Route::get('/informes/diario', InformeDiarioReparacionController::class)->name('reports.daily');
         Route::get('/crear', [ReparacionController::class, 'create'])->name('create');
         Route::get('/crear/{ordenTrabajo}', [ReparacionController::class, 'createFromOrder'])->whereNumber('ordenTrabajo')->name('create.from-order');
         Route::post('/', [ReparacionController::class, 'store'])->name('store');

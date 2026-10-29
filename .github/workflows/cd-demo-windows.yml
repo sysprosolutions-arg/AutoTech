@@ -80,6 +80,8 @@ jobs:
 
       - name: Ejecutar pruebas automatizadas
         run: php artisan test
+        env:
+          APP_ENV: testing
 
       - name: Generar instalador
         run: php artisan native:build win x64 --no-interaction

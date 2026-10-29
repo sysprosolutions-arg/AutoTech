@@ -83,6 +83,10 @@ jobs:
         env:
           APP_ENV: testing
 
+      - name: Compilar plugin Electron
+        working-directory: nativephp/electron
+        run: npm run plugin:build
+
       - name: Generar instalador
         run: php artisan native:build win x64 --no-interaction
 

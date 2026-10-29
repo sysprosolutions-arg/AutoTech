@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SearchTurnoRequest;
 use App\Http\Requests\StoreTurnoRequest;
 use App\Models\Cliente;
 use App\Models\EstadoTurno;
@@ -13,6 +14,53 @@ use Illuminate\View\View;
 
 class TurnoController extends Controller
 {
+    public function index(SearchTurnoRequest $request): View
+    {
+        $filters = $request->validated();
+        $buscar = trim((string) ($filters['buscar'] ?? ''));
+
+        $turnos = Turno::query()
+            ->with(['cliente', 'vehiculo', 'estado'])
+            ->when($buscar !== '', function ($query) use ($buscar): void {
+                $query->where(function ($query) use ($buscar): void {
+                    if (ctype_digit($buscar)) {
+                        $query->orWhere('id', (int) $buscar);
+                    }
+
+                    $query
+                        ->orWhereHas('cliente', fn ($query) => $query
+                            ->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%")
+                            ->orWhere('dni', 'like', "%{$buscar}%"))
+                        ->orWhereHas('vehiculo', fn ($query) => $query
+                            ->where('patente', 'like', "%{$buscar}%")
+                            ->orWhere('marca', 'like', "%{$buscar}%")
+                            ->orWhere('modelo', 'like', "%{$buscar}%"));
+                });
+            })
+            ->when(
+                $filters['estado'] ?? null,
+                fn ($query, string $estado) => $query->whereHas(
+                    'estado',
+                    fn ($query) => $query->where('codigo', $estado),
+                ),
+            )
+            ->when(
+                $filters['fecha'] ?? null,
+                fn ($query, string $fecha) => $query->whereDate('fecha', $fecha),
+            )
+            ->orderByDesc('fecha')
+            ->orderByDesc('hora')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('turnos.index', [
+            'estados' => EstadoTurno::query()->orderBy('nombre')->get(),
+            'filters' => $filters,
+            'turnos' => $turnos,
+        ]);
+    }
+
     public function create(): View
     {
         $clientes = Cliente::query()
@@ -57,5 +105,14 @@ class TurnoController extends Controller
         return redirect()
             ->route('turnos.create')
             ->with('status', "Turno #{$turno->id} registrado correctamente.");
+    }
+
+    public function show(Turno $turno): View
+    {
+        $turno->load(['cliente', 'vehiculo', 'estado', 'registradoPor']);
+
+        return view('turnos.show', [
+            'turno' => $turno,
+        ]);
     }
 }

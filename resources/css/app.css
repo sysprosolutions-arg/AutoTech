@@ -607,6 +607,88 @@ textarea {
     box-shadow: 0 0 0 0.2rem rgba(23, 107, 112, 0.12);
 }
 
+.empty-state {
+    align-items: center;
+    color: var(--at-muted);
+    display: flex;
+    flex-direction: column;
+    padding: clamp(2rem, 6vw, 4rem) 1rem;
+    text-align: center;
+}
+
+.empty-state > i {
+    color: #8ca1a8;
+    font-size: 2.4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    color: var(--at-ink);
+    font-size: 1.1rem;
+    font-weight: 750;
+}
+
+.empty-state p {
+    margin-bottom: 1.25rem;
+}
+
+.state-badge {
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 0.72rem;
+    font-weight: 750;
+    padding: 0.38rem 0.7rem;
+}
+
+.state-pendiente {
+    background: #fff0cf;
+    color: #8b590a;
+}
+
+.state-confirmado {
+    background: #dceeee;
+    color: var(--at-teal-dark);
+}
+
+.state-atendido {
+    background: #e2f1e6;
+    color: #326d46;
+}
+
+.state-cancelado {
+    background: #f7e2e2;
+    color: #963737;
+}
+
+.detail-grid {
+    display: grid;
+    gap: 1.4rem 2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.detail-grid > div {
+    min-width: 0;
+}
+
+.detail-grid dt {
+    color: var(--at-muted);
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.38rem;
+    text-transform: uppercase;
+}
+
+.detail-grid dd {
+    line-height: 1.6;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.detail-grid-wide {
+    grid-column: 1 / -1;
+}
+
 .roadmap-step {
     display: grid;
     gap: 0.9rem;
@@ -729,6 +811,14 @@ textarea {
 
     .app-content {
         padding: 1.15rem;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-grid-wide {
+        grid-column: auto;
     }
 }
 

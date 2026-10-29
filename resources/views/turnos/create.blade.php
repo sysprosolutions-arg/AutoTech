@@ -11,7 +11,7 @@
             <h1 class="page-title">Registrar turno</h1>
             <p class="page-lead mb-0">Seleccioná un cliente y uno de sus vehículos para programar la evaluación inicial en el taller.</p>
         </div>
-        <a class="btn btn-outline-secondary disabled" href="#" aria-disabled="true">
+        <a class="btn btn-outline-secondary" href="{{ route('turnos.index') }}">
             <i class="bi bi-search me-2" aria-hidden="true"></i>Consultar turnos
         </a>
     </div>

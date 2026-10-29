@@ -19,7 +19,7 @@ class DashboardController extends Controller
 
         $modules = [
             ['name' => 'Clientes', 'description' => 'Personas y vehículos', 'icon' => 'bi-people', 'color' => 'teal'],
-            ['name' => 'Turnos', 'description' => 'Agenda del taller', 'icon' => 'bi-calendar3', 'color' => 'blue', 'route' => 'turnos.create'],
+            ['name' => 'Turnos', 'description' => 'Agenda del taller', 'icon' => 'bi-calendar3', 'color' => 'blue', 'route' => 'turnos.index'],
             ['name' => 'Reparaciones', 'description' => 'Órdenes en seguimiento', 'icon' => 'bi-tools', 'color' => 'amber'],
             ['name' => 'Repuestos', 'description' => 'Stock y disponibilidad', 'icon' => 'bi-gear', 'color' => 'slate'],
             ['name' => 'Compras', 'description' => 'Abastecimiento', 'icon' => 'bi-cart3', 'color' => 'purple'],

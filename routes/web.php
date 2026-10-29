@@ -21,7 +21,9 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     Route::middleware('role:administrador,turnos')->prefix('turnos')->name('turnos.')->group(function (): void {
+        Route::get('/', [TurnoController::class, 'index'])->name('index');
         Route::get('/crear', [TurnoController::class, 'create'])->name('create');
         Route::post('/', [TurnoController::class, 'store'])->name('store');
+        Route::get('/{turno}', [TurnoController::class, 'show'])->whereNumber('turno')->name('show');
     });
 });

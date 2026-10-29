@@ -27,7 +27,7 @@
                 ['Repuestos', 'bi-gear', null],
                 ['Compras', 'bi-cart3', null],
                 ['Reparaciones', 'bi-tools', null],
-                ['Turnos', 'bi-calendar3', 'turnos.create'],
+                ['Turnos', 'bi-calendar3', 'turnos.index'],
                 ['Facturación', 'bi-receipt', null],
             ] as [$label, $icon, $routeName])
                 @if ($routeName)

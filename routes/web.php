@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PresupuestoController;
+use App\Http\Controllers\PresupuestoDecisionController;
 use App\Http\Controllers\TurnoController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +26,13 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/', [TurnoController::class, 'index'])->name('index');
         Route::get('/crear', [TurnoController::class, 'create'])->name('create');
         Route::post('/', [TurnoController::class, 'store'])->name('store');
+        Route::get('/{turno}/presupuesto/crear', [PresupuestoController::class, 'create'])->whereNumber('turno')->name('presupuesto.create');
         Route::get('/{turno}', [TurnoController::class, 'show'])->whereNumber('turno')->name('show');
+    });
+
+    Route::middleware('role:administrador,turnos')->prefix('presupuestos')->name('presupuestos.')->group(function (): void {
+        Route::post('/', [PresupuestoController::class, 'store'])->name('store');
+        Route::get('/{presupuesto}', [PresupuestoController::class, 'show'])->whereNumber('presupuesto')->name('show');
+        Route::post('/{presupuesto}/decision', PresupuestoDecisionController::class)->whereNumber('presupuesto')->name('decision.store');
     });
 });

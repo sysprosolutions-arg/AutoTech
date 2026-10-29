@@ -43,5 +43,6 @@ class DatabaseSeeder extends Seeder
         $administrator->roles()->sync($roles->pluck('id'));
 
         $this->call(TurnosMasterDataSeeder::class);
+        $this->call(PresupuestosMasterDataSeeder::class);
     }
 }

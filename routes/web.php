@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\PresupuestoDecisionController;
+use App\Http\Controllers\ReparacionController;
 use App\Http\Controllers\TurnoController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,5 +35,13 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/', [PresupuestoController::class, 'store'])->name('store');
         Route::get('/{presupuesto}', [PresupuestoController::class, 'show'])->whereNumber('presupuesto')->name('show');
         Route::post('/{presupuesto}/decision', PresupuestoDecisionController::class)->whereNumber('presupuesto')->name('decision.store');
+    });
+
+    Route::middleware('role:administrador,reparacion')->prefix('reparaciones')->name('reparaciones.')->group(function (): void {
+        Route::get('/crear', [ReparacionController::class, 'create'])->name('create');
+        Route::get('/crear/{ordenTrabajo}', [ReparacionController::class, 'createFromOrder'])->whereNumber('ordenTrabajo')->name('create.from-order');
+        Route::post('/', [ReparacionController::class, 'store'])->name('store');
+        Route::get('/{reparacion}', [ReparacionController::class, 'show'])->whereNumber('reparacion')->name('show');
+        Route::post('/{reparacion}/finalizar', [ReparacionController::class, 'finish'])->whereNumber('reparacion')->name('finish');
     });
 });

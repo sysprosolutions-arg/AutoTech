@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable(['numero', 'presupuesto_id', 'turno_id', 'vehiculo_id', 'empleado_id', 'estado_orden_trabajo_id', 'emitida_por', 'fecha_emision', 'instrucciones'])]
 class OrdenTrabajo extends Model
@@ -55,6 +56,12 @@ class OrdenTrabajo extends Model
     public function detalles(): HasMany
     {
         return $this->hasMany(DetalleOrdenTrabajo::class);
+    }
+
+    /** @return HasOne<Reparacion, $this> */
+    public function reparacion(): HasOne
+    {
+        return $this->hasOne(Reparacion::class);
     }
 
     /** @return array<string, string> */

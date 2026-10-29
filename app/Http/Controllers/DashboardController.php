@@ -20,7 +20,15 @@ class DashboardController extends Controller
         $modules = [
             ['name' => 'Clientes', 'description' => 'Personas y vehículos', 'icon' => 'bi-people', 'color' => 'teal'],
             ['name' => 'Turnos', 'description' => 'Agenda del taller', 'icon' => 'bi-calendar3', 'color' => 'blue', 'route' => 'turnos.index'],
-            ['name' => 'Reparaciones', 'description' => 'Órdenes en seguimiento', 'icon' => 'bi-tools', 'color' => 'amber'],
+            [
+                'name' => 'Reparaciones',
+                'description' => 'Órdenes en seguimiento',
+                'icon' => 'bi-tools',
+                'color' => 'amber',
+                'route' => $user->roles->pluck('name')->intersect(['administrador', 'reparacion'])->isNotEmpty()
+                    ? 'reparaciones.create'
+                    : null,
+            ],
             ['name' => 'Repuestos', 'description' => 'Stock y disponibilidad', 'icon' => 'bi-gear', 'color' => 'slate'],
             ['name' => 'Compras', 'description' => 'Abastecimiento', 'icon' => 'bi-cart3', 'color' => 'purple'],
             ['name' => 'Facturación', 'description' => 'Comprobantes y análisis', 'icon' => 'bi-receipt', 'color' => 'green'],

@@ -816,6 +816,81 @@ textarea {
     margin: 0;
 }
 
+.repair-order-list {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.repair-order-card {
+    align-items: center;
+    border: 1px solid var(--at-border);
+    border-radius: 14px;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 0.8fr 1.4fr 1.2fr auto;
+    padding: 1rem;
+}
+
+.repair-order-card small,
+.repair-order-number span {
+    color: var(--at-muted);
+    display: block;
+    font-size: 0.75rem;
+}
+
+.repair-order-number strong {
+    color: var(--at-teal-dark);
+    font-size: 1.1rem;
+}
+
+.repair-summary {
+    top: 102px;
+}
+
+.authorized-work-list {
+    display: grid;
+    gap: 0.8rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.authorized-work-list li {
+    align-items: flex-start;
+    display: flex;
+    gap: 0.65rem;
+}
+
+.authorized-work-list i {
+    color: var(--at-teal);
+}
+
+.authorized-work-list strong,
+.authorized-work-list small {
+    display: block;
+}
+
+.authorized-work-list small {
+    color: var(--at-muted);
+    margin-top: 0.15rem;
+}
+
+.state-en-proceso {
+    background: #e1ecf7;
+    color: #356f9e;
+}
+
+.state-finalizada {
+    background: #e2f1e6;
+    color: #326d46;
+}
+
+@media (max-width: 1199.98px) {
+    .repair-order-card {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 .roadmap-step {
     display: grid;
     gap: 0.9rem;
@@ -958,6 +1033,11 @@ textarea {
         flex-direction: row;
         justify-content: space-between;
         padding-left: 1.6rem;
+    }
+
+    .repair-order-card {
+        align-items: stretch;
+        grid-template-columns: 1fr;
     }
 }
 

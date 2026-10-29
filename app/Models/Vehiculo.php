@@ -34,6 +34,16 @@ class Vehiculo extends Model
     }
 
     /**
+     * Get the repairs registered for the vehicle.
+     *
+     * @return HasMany<Reparacion, $this>
+     */
+    public function reparaciones(): HasMany
+    {
+        return $this->hasMany(Reparacion::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

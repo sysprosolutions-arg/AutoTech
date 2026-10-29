@@ -30,4 +30,10 @@ class Empleado extends Model
     {
         return $this->hasMany(OrdenTrabajo::class);
     }
+
+    /** @return HasMany<Reparacion, $this> */
+    public function reparaciones(): HasMany
+    {
+        return $this->hasMany(Reparacion::class);
+    }
 }

@@ -72,6 +72,11 @@
                     <div><dt>Empleado asignado</dt><dd>{{ $presupuesto->ordenTrabajo->empleado->nombre }} {{ $presupuesto->ordenTrabajo->empleado->apellido }}</dd></div>
                     <div><dt>Especialidad</dt><dd>{{ $presupuesto->ordenTrabajo->empleado->especialidad->nombre }}</dd></div>
                 </dl>
+                @if (auth()->user()?->roles->pluck('name')->intersect(['administrador', 'reparacion'])->isNotEmpty())
+                    <div class="mt-4">
+                        <a class="btn btn-autotech px-4" href="{{ route('reparaciones.create.from-order', $presupuesto->ordenTrabajo) }}"><i class="bi bi-wrench-adjustable me-2" aria-hidden="true"></i>Registrar reparación</a>
+                    </div>
+                @endif
             </section>
         @endif
     </div>

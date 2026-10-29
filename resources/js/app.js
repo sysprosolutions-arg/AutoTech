@@ -69,4 +69,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateBudgetTotal();
     }
+
+    document.querySelectorAll('[data-repair-part]').forEach((item) => {
+        const toggle = item.querySelector('[data-repair-part-toggle]');
+        const quantity = item.querySelector('[data-repair-part-quantity]');
+
+        const updateAvailability = () => {
+            if (quantity) {
+                quantity.disabled = !toggle?.checked || toggle.disabled;
+            }
+        };
+
+        toggle?.addEventListener('change', updateAvailability);
+        updateAvailability();
+    });
 });

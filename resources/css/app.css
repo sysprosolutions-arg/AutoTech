@@ -885,9 +885,97 @@ textarea {
     color: #326d46;
 }
 
+.daily-report-header,
+.daily-report-item-heading {
+    align-items: center;
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+}
+
+.report-metric span,
+.report-metric strong {
+    display: block;
+}
+
+.report-metric span {
+    color: var(--at-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.report-metric strong {
+    color: var(--at-teal-dark);
+    margin-top: 0.2rem;
+}
+
+.daily-report-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.daily-report-data {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 1.25rem 0 0.75rem;
+}
+
+.daily-report-data div {
+    border-top: 1px solid var(--at-border);
+    padding-top: 0.9rem;
+}
+
+.daily-report-data dt {
+    color: var(--at-muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.daily-report-data dd {
+    margin: 0.25rem 0 0;
+}
+
+@media print {
+    .app-sidebar,
+    .app-topbar,
+    .report-screen-actions {
+        display: none !important;
+    }
+
+    .app-main {
+        margin: 0;
+    }
+
+    .app-content {
+        padding: 0;
+    }
+
+    .content-card {
+        box-shadow: none;
+        break-inside: avoid;
+    }
+}
+
 @media (max-width: 1199.98px) {
     .repair-order-card {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767.98px) {
+    .daily-report-header,
+    .daily-report-item-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .daily-report-data {
+        grid-template-columns: 1fr;
     }
 }
 

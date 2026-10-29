@@ -11,9 +11,10 @@
             <h1 class="page-title">Reparaciones</h1>
             <p class="page-lead mb-0">Consultá los trabajos registrados y su trazabilidad operativa.</p>
         </div>
-        <a class="btn btn-autotech px-4" href="{{ route('reparaciones.create') }}">
-            <i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Nueva reparación
-        </a>
+        <div class="d-flex gap-2 flex-wrap">
+            <a class="btn btn-outline-secondary" href="{{ route('reparaciones.reports.daily') }}"><i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>Informe diario</a>
+            <a class="btn btn-autotech px-4" href="{{ route('reparaciones.create') }}"><i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Nueva reparación</a>
+        </div>
     </div>
 </section>
 

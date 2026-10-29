@@ -1,6 +1,6 @@
 {
     "name": "autotech",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "Sistema de gesti\u00f3n integral para AutoTech S.A.",
     "main": "./out/main/index.js",
     "author": "SysPro Solutions ARG",

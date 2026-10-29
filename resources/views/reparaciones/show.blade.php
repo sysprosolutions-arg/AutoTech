@@ -5,14 +5,14 @@
 
 @section('content')
 <section class="mb-4">
-    <div class="page-eyebrow">ATSA-10 · Reparación</div>
+    <div class="page-eyebrow">ATSA-10/12 · Reparación</div>
     <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
         <div><div class="d-flex align-items-center gap-3 flex-wrap"><h1 class="page-title mb-0">{{ $reparacion->numero }}</h1><span class="state-badge state-{{ $reparacion->estado->codigo }}">{{ $reparacion->estado->nombre }}</span></div><p class="page-lead mb-0 mt-2">{{ $reparacion->vehiculo->patente }} · {{ $reparacion->vehiculo->cliente->nombre }} {{ $reparacion->vehiculo->cliente->apellido }}</p></div>
         <div class="d-flex gap-2 flex-wrap">
             @if ($reparacion->estado->codigo === 'en-proceso')
                 <form method="POST" action="{{ route('reparaciones.finish', $reparacion) }}">@csrf<button class="btn btn-success px-4" type="submit"><i class="bi bi-check2-circle me-2" aria-hidden="true"></i>Finalizar reparación</button></form>
             @endif
-            <a class="btn btn-outline-secondary" href="{{ route('reparaciones.create') }}"><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver</a>
+            <a class="btn btn-outline-secondary" href="{{ route('reparaciones.index') }}"><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver</a>
         </div>
     </div>
 </section>
@@ -42,6 +42,8 @@
         <section class="content-card mb-4" aria-labelledby="traceability-title">
             <div class="form-section-heading"><span class="form-section-icon"><i class="bi bi-diagram-3" aria-hidden="true"></i></span><div><h2 id="traceability-title">Trazabilidad</h2><p>Circuito que habilitó la reparación.</p></div></div>
             <dl class="decision-detail mb-0">
+                <div><dt>Cliente</dt><dd>{{ $reparacion->vehiculo->cliente->nombre }} {{ $reparacion->vehiculo->cliente->apellido }}</dd></div>
+                <div><dt>Vehículo</dt><dd>{{ $reparacion->vehiculo->patente }}<small class="d-block text-secondary">{{ $reparacion->vehiculo->marca }} {{ $reparacion->vehiculo->modelo }} · {{ $reparacion->vehiculo->anio }}</small></dd></div>
                 <div><dt>Orden de Trabajo</dt><dd>{{ $reparacion->ordenTrabajo->numero }}</dd></div>
                 <div><dt>Presupuesto</dt><dd>{{ $reparacion->ordenTrabajo->presupuesto->numero }}</dd></div>
                 <div><dt>Mecánico</dt><dd>{{ $reparacion->empleado->nombre }} {{ $reparacion->empleado->apellido }}<small class="d-block text-secondary">{{ $reparacion->empleado->especialidad->nombre }}</small></dd></div>

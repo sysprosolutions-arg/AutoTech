@@ -26,12 +26,12 @@
                 ['Proveedores', 'bi-truck', null],
                 ['Repuestos', 'bi-gear', null],
                 ['Compras', 'bi-cart3', null],
-                ['Reparaciones', 'bi-tools', $currentUser?->roles->pluck('name')->intersect(['administrador', 'reparacion'])->isNotEmpty() ? 'reparaciones.create' : null],
+                ['Reparaciones', 'bi-tools', $currentUser?->roles->pluck('name')->intersect(['administrador', 'reparacion'])->isNotEmpty() ? 'reparaciones.index' : null],
                 ['Turnos', 'bi-calendar3', 'turnos.index'],
                 ['Facturación', 'bi-receipt', null],
             ] as [$label, $icon, $routeName])
                 @if ($routeName)
-                    <a class="sidebar-link {{ request()->routeIs($routeName === 'reparaciones.create' ? 'reparaciones.*' : 'turnos.*') ? 'active' : '' }}" href="{{ route($routeName) }}" @if(request()->routeIs($routeName === 'reparaciones.create' ? 'reparaciones.*' : 'turnos.*')) aria-current="page" @endif>
+                    <a class="sidebar-link {{ request()->routeIs($routeName === 'reparaciones.index' ? 'reparaciones.*' : 'turnos.*') ? 'active' : '' }}" href="{{ route($routeName) }}" @if(request()->routeIs($routeName === 'reparaciones.index' ? 'reparaciones.*' : 'turnos.*')) aria-current="page" @endif>
                         <i class="bi {{ $icon }}" aria-hidden="true"></i>
                         <span>{{ $label }}</span>
                     </a>

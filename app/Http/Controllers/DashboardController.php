@@ -26,7 +26,7 @@ class DashboardController extends Controller
                 'icon' => 'bi-tools',
                 'color' => 'amber',
                 'route' => $user->roles->pluck('name')->intersect(['administrador', 'reparacion'])->isNotEmpty()
-                    ? 'reparaciones.create'
+                    ? 'reparaciones.index'
                     : null,
             ],
             ['name' => 'Repuestos', 'description' => 'Stock y disponibilidad', 'icon' => 'bi-gear', 'color' => 'slate'],

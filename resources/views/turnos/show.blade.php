@@ -14,9 +14,14 @@
             </div>
             <p class="page-lead mb-0 mt-2">Información registrada para la atención del vehículo.</p>
         </div>
-        <a class="btn btn-outline-secondary" href="{{ route('turnos.index') }}">
-            <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver a turnos
-        </a>
+        <div class="d-flex gap-2 flex-wrap">
+            @if ($turno->presupuesto)
+                <a class="btn btn-autotech px-4" href="{{ route('presupuestos.show', $turno->presupuesto) }}"><i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>Ver presupuesto</a>
+            @else
+                <a class="btn btn-autotech px-4" href="{{ route('turnos.presupuesto.create', $turno) }}"><i class="bi bi-file-earmark-plus me-2" aria-hidden="true"></i>Generar presupuesto</a>
+            @endif
+            <a class="btn btn-outline-secondary" href="{{ route('turnos.index') }}"><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver a turnos</a>
+        </div>
     </div>
 </section>
 

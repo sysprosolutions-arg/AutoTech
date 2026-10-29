@@ -109,7 +109,7 @@ class TurnoController extends Controller
 
     public function show(Turno $turno): View
     {
-        $turno->load(['cliente', 'vehiculo', 'estado', 'registradoPor']);
+        $turno->load(['cliente', 'vehiculo', 'estado', 'registradoPor', 'presupuesto.aprobacion']);
 
         return view('turnos.show', [
             'turno' => $turno,

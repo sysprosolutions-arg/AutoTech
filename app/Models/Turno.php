@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable([
     'cliente_id',
@@ -59,6 +60,16 @@ class Turno extends Model
     public function registradoPor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'registrado_por');
+    }
+
+    /**
+     * Get the budget created for the appointment.
+     *
+     * @return HasOne<Presupuesto, $this>
+     */
+    public function presupuesto(): HasOne
+    {
+        return $this->hasOne(Presupuesto::class);
     }
 
     /**

@@ -689,6 +689,133 @@ textarea {
     grid-column: 1 / -1;
 }
 
+.detail-label {
+    color: var(--at-muted);
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+}
+
+.catalog-list {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.catalog-item {
+    align-items: center;
+    border: 1px solid var(--at-border);
+    border-radius: 13px;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.catalog-item:has([data-budget-toggle]:checked) {
+    background: #f2f9f9;
+    border-color: #8fc1c4;
+}
+
+.catalog-check {
+    align-items: flex-start;
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.catalog-check strong,
+.catalog-check span {
+    display: block;
+}
+
+.catalog-check span {
+    color: var(--at-muted);
+    font-size: 0.78rem;
+    margin-top: 0.2rem;
+}
+
+.catalog-price {
+    align-items: flex-end;
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.catalog-price input {
+    min-height: 36px;
+    width: 76px;
+}
+
+.budget-summary {
+    top: 102px;
+}
+
+.budget-total {
+    color: var(--at-teal-dark);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    margin: 1.2rem 0 0.6rem;
+}
+
+.budget-validity {
+    align-items: center;
+    background: var(--at-teal-soft);
+    border-radius: 12px;
+    color: var(--at-teal-dark);
+    display: flex;
+    font-size: 0.8rem;
+    gap: 0.65rem;
+    padding: 0.85rem;
+}
+
+.budget-table-total {
+    color: var(--at-teal-dark) !important;
+    font-size: 1.15rem;
+}
+
+.budget-note {
+    background: var(--at-surface);
+    border-radius: 12px;
+    color: var(--at-ink-soft);
+    padding: 1rem;
+}
+
+.state-aprobado {
+    background: #e2f1e6;
+    color: #326d46;
+}
+
+.state-rechazado {
+    background: #f7e2e2;
+    color: #963737;
+}
+
+.order-issued {
+    border-color: #acd2b8;
+}
+
+.decision-detail {
+    display: grid;
+    gap: 1rem;
+}
+
+.decision-detail dt {
+    color: var(--at-muted);
+    font-size: 0.7rem;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+}
+
+.decision-detail dd {
+    margin: 0;
+}
+
 .roadmap-step {
     display: grid;
     gap: 0.9rem;
@@ -819,6 +946,18 @@ textarea {
 
     .detail-grid-wide {
         grid-column: auto;
+    }
+
+    .catalog-item {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .catalog-price {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        padding-left: 1.6rem;
     }
 }
 

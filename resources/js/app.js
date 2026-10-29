@@ -30,4 +30,43 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebar?.classList.toggle('is-open');
         document.body.classList.toggle('sidebar-open');
     });
+
+    const budgetForm = document.querySelector('[data-budget-form]');
+
+    if (budgetForm) {
+        const currency = new Intl.NumberFormat('es-AR', {
+            style: 'currency',
+            currency: 'ARS',
+        });
+        const totalElement = budgetForm.querySelector('[data-budget-total]');
+
+        const updateBudgetTotal = () => {
+            let total = 0;
+
+            budgetForm.querySelectorAll('[data-budget-item]').forEach((item) => {
+                const toggle = item.querySelector('[data-budget-toggle]');
+                const quantity = item.querySelector('[data-budget-quantity]');
+                const selected = toggle?.checked ?? false;
+
+                if (quantity) {
+                    quantity.disabled = !selected;
+                }
+
+                if (selected) {
+                    total += Number(item.dataset.unitPrice ?? 0) * Number(quantity?.value ?? 1);
+                }
+            });
+
+            if (totalElement) {
+                totalElement.textContent = currency.format(total);
+            }
+        };
+
+        budgetForm.querySelectorAll('[data-budget-toggle], [data-budget-quantity]').forEach((input) => {
+            input.addEventListener('change', updateBudgetTotal);
+            input.addEventListener('input', updateBudgetTotal);
+        });
+
+        updateBudgetTotal();
+    }
 });

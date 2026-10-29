@@ -83,6 +83,10 @@ jobs:
         env:
           APP_ENV: testing
 
+      - name: Instalar dependencias Electron
+        working-directory: nativephp/electron
+        run: npm ci
+
       - name: Compilar plugin Electron
         working-directory: nativephp/electron
         run: npm run plugin:build

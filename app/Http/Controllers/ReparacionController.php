@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SearchReparacionRequest;
 use App\Http\Requests\StoreReparacionRequest;
 use App\Models\DetalleOrdenTrabajo;
 use App\Models\EstadoOrdenTrabajo;
@@ -19,6 +20,46 @@ use Illuminate\View\View;
 
 class ReparacionController extends Controller
 {
+    public function index(SearchReparacionRequest $request): View
+    {
+        $filters = $request->validated();
+        $buscar = trim((string) ($filters['buscar'] ?? ''));
+
+        $reparaciones = Reparacion::query()
+            ->with(['vehiculo.cliente', 'empleado.especialidad', 'tipo', 'estado'])
+            ->when($buscar !== '', function ($query) use ($buscar): void {
+                $query->where(function ($query) use ($buscar): void {
+                    if (ctype_digit($buscar)) {
+                        $query->orWhere('id', (int) $buscar);
+                    }
+
+                    $query
+                        ->orWhere('numero', 'like', "%{$buscar}%")
+                        ->orWhereHas('vehiculo', fn ($query) => $query
+                            ->where('patente', 'like', "%{$buscar}%")
+                            ->orWhere('marca', 'like', "%{$buscar}%")
+                            ->orWhere('modelo', 'like', "%{$buscar}%"));
+                });
+            })
+            ->when(
+                $filters['estado'] ?? null,
+                fn ($query, string $estado) => $query->whereHas(
+                    'estado',
+                    fn ($query) => $query->where('codigo', $estado),
+                ),
+            )
+            ->orderByDesc('fecha_inicio')
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('reparaciones.index', [
+            'estados' => EstadoReparacion::query()->orderBy('nombre')->get(),
+            'filters' => $filters,
+            'reparaciones' => $reparaciones,
+        ]);
+    }
+
     public function create(): View
     {
         $ordenesTrabajo = OrdenTrabajo::query()

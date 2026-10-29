@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function (): void {
     });
 
     Route::middleware('role:administrador,reparacion')->prefix('reparaciones')->name('reparaciones.')->group(function (): void {
+        Route::get('/', [ReparacionController::class, 'index'])->name('index');
         Route::get('/crear', [ReparacionController::class, 'create'])->name('create');
         Route::get('/crear/{ordenTrabajo}', [ReparacionController::class, 'createFromOrder'])->whereNumber('ordenTrabajo')->name('create.from-order');
         Route::post('/', [ReparacionController::class, 'store'])->name('store');

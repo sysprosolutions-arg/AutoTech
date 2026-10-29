@@ -22,7 +22,7 @@ class PresupuestosMasterDataSeeder extends Seeder
             ['codigo' => 'electricidad', 'nombre' => 'Electricidad automotriz'],
             ['codigo' => 'frenos-suspension', 'nombre' => 'Frenos y suspensión'],
         ])->mapWithKeys(function (array $especialidad): array {
-            $model = Especialidad::query()->updateOrCreate(
+            $model = Especialidad::query()->firstOrCreate(
                 ['codigo' => $especialidad['codigo']],
                 $especialidad,
             );
@@ -35,7 +35,7 @@ class PresupuestosMasterDataSeeder extends Seeder
             ['codigo' => 'inactivo', 'nombre' => 'Inactivo'],
             ['codigo' => 'licencia', 'nombre' => 'De licencia'],
         ])->mapWithKeys(function (array $estado): array {
-            $model = EstadoEmpleado::query()->updateOrCreate(
+            $model = EstadoEmpleado::query()->firstOrCreate(
                 ['codigo' => $estado['codigo']],
                 $estado,
             );
@@ -47,7 +47,7 @@ class PresupuestosMasterDataSeeder extends Seeder
             ['legajo' => 'EMP-001', 'nombre' => 'Martín', 'apellido' => 'Gómez', 'especialidad' => 'mecanica-general'],
             ['legajo' => 'EMP-002', 'nombre' => 'Valeria', 'apellido' => 'Sosa', 'especialidad' => 'electricidad'],
             ['legajo' => 'EMP-003', 'nombre' => 'Diego', 'apellido' => 'Acosta', 'especialidad' => 'frenos-suspension'],
-        ])->each(fn (array $empleado): Empleado => Empleado::query()->updateOrCreate(
+        ])->each(fn (array $empleado): Empleado => Empleado::query()->firstOrCreate(
             ['legajo' => $empleado['legajo']],
             [
                 'nombre' => $empleado['nombre'],
@@ -63,7 +63,7 @@ class PresupuestosMasterDataSeeder extends Seeder
             ['codigo' => 'diagnostico-electrico', 'nombre' => 'Diagnóstico eléctrico', 'descripcion' => 'Control de batería, alternador y sistema eléctrico.', 'especialidad' => 'electricidad', 'precio_base' => '42000.00'],
             ['codigo' => 'revision-frenos', 'nombre' => 'Revisión de frenos', 'descripcion' => 'Inspección del sistema de frenado.', 'especialidad' => 'frenos-suspension', 'precio_base' => '38000.00'],
             ['codigo' => 'revision-suspension', 'nombre' => 'Revisión de suspensión', 'descripcion' => 'Control de amortiguadores, bujes y tren delantero.', 'especialidad' => 'frenos-suspension', 'precio_base' => '40000.00'],
-        ])->each(fn (array $servicio): TipoServicio => TipoServicio::query()->updateOrCreate(
+        ])->each(fn (array $servicio): TipoServicio => TipoServicio::query()->firstOrCreate(
             ['codigo' => $servicio['codigo']],
             [
                 'nombre' => $servicio['nombre'],
@@ -79,7 +79,7 @@ class PresupuestosMasterDataSeeder extends Seeder
             ['codigo' => 'REP-FIL-001', 'nombre' => 'Filtro de aceite', 'marca' => 'Toyota', 'original' => true, 'precio_venta' => '18500.00', 'stock' => 12],
             ['codigo' => 'REP-PAS-001', 'nombre' => 'Juego de pastillas de freno', 'marca' => 'Bosch', 'original' => false, 'precio_venta' => '68000.00', 'stock' => 8],
             ['codigo' => 'REP-BAT-001', 'nombre' => 'Batería 12 V 65 Ah', 'marca' => 'Moura', 'original' => false, 'precio_venta' => '176000.00', 'stock' => 5],
-        ])->each(fn (array $repuesto): Repuesto => Repuesto::query()->updateOrCreate(
+        ])->each(fn (array $repuesto): Repuesto => Repuesto::query()->firstOrCreate(
             ['codigo' => $repuesto['codigo']],
             [
                 'nombre' => $repuesto['nombre'],
@@ -96,7 +96,7 @@ class PresupuestosMasterDataSeeder extends Seeder
             ['codigo' => 'en-proceso', 'nombre' => 'En proceso'],
             ['codigo' => 'finalizada', 'nombre' => 'Finalizada'],
             ['codigo' => 'cancelada', 'nombre' => 'Cancelada'],
-        ])->each(fn (array $estado): EstadoOrdenTrabajo => EstadoOrdenTrabajo::query()->updateOrCreate(
+        ])->each(fn (array $estado): EstadoOrdenTrabajo => EstadoOrdenTrabajo::query()->firstOrCreate(
             ['codigo' => $estado['codigo']],
             $estado,
         ));

@@ -19,12 +19,12 @@ class TurnosMasterDataSeeder extends Seeder
             ['codigo' => 'confirmado', 'nombre' => 'Confirmado'],
             ['codigo' => 'atendido', 'nombre' => 'Atendido'],
             ['codigo' => 'cancelado', 'nombre' => 'Cancelado'],
-        ])->each(fn (array $estado): EstadoTurno => EstadoTurno::query()->updateOrCreate(
+        ])->each(fn (array $estado): EstadoTurno => EstadoTurno::query()->firstOrCreate(
             ['codigo' => $estado['codigo']],
             $estado,
         ));
 
-        $ana = Cliente::query()->updateOrCreate([
+        $ana = Cliente::query()->firstOrCreate([
             'dni' => '30111222',
         ], [
             'nombre' => 'Ana',
@@ -34,7 +34,7 @@ class TurnosMasterDataSeeder extends Seeder
             'activo' => true,
         ]);
 
-        $carlos = Cliente::query()->updateOrCreate([
+        $carlos = Cliente::query()->firstOrCreate([
             'dni' => '28777666',
         ], [
             'nombre' => 'Carlos',
@@ -44,7 +44,7 @@ class TurnosMasterDataSeeder extends Seeder
             'activo' => true,
         ]);
 
-        $lucia = Cliente::query()->updateOrCreate([
+        $lucia = Cliente::query()->firstOrCreate([
             'dni' => '33999111',
         ], [
             'nombre' => 'Lucía',
@@ -60,7 +60,7 @@ class TurnosMasterDataSeeder extends Seeder
             ['cliente' => $carlos, 'patente' => 'AD789GH', 'marca' => 'Volkswagen', 'modelo' => 'Amarok', 'anio' => 2021, 'color' => 'Negro'],
             ['cliente' => $lucia, 'patente' => 'AE321JK', 'marca' => 'Chevrolet', 'modelo' => 'Onix', 'anio' => 2022, 'color' => 'Azul'],
         ])->each(function (array $vehiculo): void {
-            Vehiculo::query()->updateOrCreate([
+            Vehiculo::query()->firstOrCreate([
                 'patente' => $vehiculo['patente'],
             ], [
                 'cliente_id' => $vehiculo['cliente']->id,

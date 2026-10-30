@@ -15,6 +15,9 @@
             <a class="btn btn-outline-secondary" href="{{ route('repuestos.reports.brands') }}">
                 <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Reporte por marca
             </a>
+            <a class="btn btn-outline-secondary" href="{{ route('repuestos.reports.suppliers') }}">
+                <i class="bi bi-truck me-2" aria-hidden="true"></i>Reporte por proveedor
+            </a>
             <a class="btn btn-autotech" href="{{ route('repuestos.create') }}">
                 <i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Registrar repuesto
             </a>

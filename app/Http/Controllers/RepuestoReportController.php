@@ -10,6 +10,19 @@ use Illuminate\View\View;
 
 class RepuestoReportController extends Controller
 {
+    public function alternatives(): View
+    {
+        $repuestos = Repuesto::query()
+            ->with('proveedor')
+            ->where('activo', true)
+            ->where('original', false)
+            ->orderBy('marca')
+            ->orderBy('codigo')
+            ->get();
+
+        return view('repuestos.lists.alternatives', ['repuestos' => $repuestos]);
+    }
+
     public function originals(): View
     {
         $repuestos = Repuesto::query()

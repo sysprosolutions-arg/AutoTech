@@ -78,7 +78,10 @@ class TurnoRegistrationTest extends TestCase
             ->assertOk()
             ->assertSee('Registrar turno')
             ->assertSee('Ana')
-            ->assertSee('AB123CD');
+            ->assertSee('AB123CD')
+            ->assertSee('Horario de atención: 08:00 a 17:00, en intervalos de 30 minutos.')
+            ->assertSee('value="08:00"', false)
+            ->assertSee('value="17:00"', false);
     }
 
     public function test_responsible_user_can_register_an_appointment(): void
@@ -144,6 +147,25 @@ class TurnoRegistrationTest extends TestCase
             ])
             ->assertRedirect('/turnos/crear')
             ->assertSessionHasErrors(['fecha', 'hora', 'motivo']);
+
+        $this->assertDatabaseCount('turnos', 0);
+    }
+
+    public function test_appointment_time_must_be_within_business_hours(): void
+    {
+        foreach (['07:59', '17:01'] as $horaFueraDeHorario) {
+            $this->actingAs($this->responsableTurnos)
+                ->from('/turnos/crear')
+                ->post('/turnos', [
+                    'cliente_id' => $this->cliente->id,
+                    'vehiculo_id' => $this->vehiculo->id,
+                    'fecha' => now()->addDay()->toDateString(),
+                    'hora' => $horaFueraDeHorario,
+                    'motivo' => 'Service programado.',
+                ])
+                ->assertRedirect('/turnos/crear')
+                ->assertSessionHasErrors('hora');
+        }
 
         $this->assertDatabaseCount('turnos', 0);
     }

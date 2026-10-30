@@ -80,7 +80,7 @@ class RepuestoModificationTest extends TestCase
             'marca' => 'Bosch',
             'original' => false,
             'precio_venta' => '22000.00',
-            'stock' => 15,
+            'stock' => 12,
         ]);
     }
 

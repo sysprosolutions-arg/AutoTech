@@ -11,6 +11,7 @@ class UpdateRepuestoRequest extends StoreRepuestoRequest
     public function rules(): array
     {
         $rules = parent::rules();
+        unset($rules['stock']);
         $rules['codigo'] = [
             'required',
             'string',

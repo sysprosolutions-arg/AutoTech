@@ -25,6 +25,12 @@ class Repuesto extends Model
         return $this->hasMany(DetallePresupuesto::class);
     }
 
+    /** @return HasMany<MovimientoStock, $this> */
+    public function movimientosStock(): HasMany
+    {
+        return $this->hasMany(MovimientoStock::class);
+    }
+
     /** @return array<string, string> */
     protected function casts(): array
     {

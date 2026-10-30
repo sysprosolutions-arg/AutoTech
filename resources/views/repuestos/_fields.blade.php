@@ -20,6 +20,10 @@
     <div class="form-section-heading"><span class="form-section-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span><div><h2>Precio y disponibilidad</h2><p>Valores utilizados por presupuestos y control de existencias.</p></div></div>
     <div class="row g-3">
         <div class="col-md-6"><label class="form-label" for="precio_venta">Precio de venta <span class="required-mark">*</span></label><div class="input-group"><span class="input-group-text">$</span><input class="form-control @error('precio_venta') is-invalid @enderror" id="precio_venta" name="precio_venta" type="number" min="0" max="9999999999.99" step="0.01" value="{{ old('precio_venta', $repuesto?->precio_venta) }}" placeholder="0,00" required>@error('precio_venta')<div class="invalid-feedback">{{ $message }}</div>@enderror</div></div>
-        <div class="col-md-6"><label class="form-label" for="stock">Stock <span class="required-mark">*</span></label><input class="form-control @error('stock') is-invalid @enderror" id="stock" name="stock" type="number" min="0" max="1000000" value="{{ old('stock', $repuesto?->stock ?? 0) }}" required>@error('stock')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
+        @if ($repuesto === null)
+            <div class="col-md-6"><label class="form-label" for="stock">Stock inicial <span class="required-mark">*</span></label><input class="form-control @error('stock') is-invalid @enderror" id="stock" name="stock" type="number" min="0" max="1000000" value="{{ old('stock', 0) }}" required>@error('stock')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
+        @else
+            <div class="col-md-6"><span class="detail-label">Stock actual</span><strong class="d-block fs-4">{{ $repuesto->stock }} unidades</strong><a class="small" href="{{ route('repuestos.stock', $repuesto) }}">Registrar un movimiento de stock</a></div>
+        @endif
     </div>
 </div>

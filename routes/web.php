@@ -6,6 +6,7 @@ use App\Http\Controllers\InformeDiarioReparacionController;
 use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\PresupuestoDecisionController;
 use App\Http\Controllers\ReparacionController;
+use App\Http\Controllers\RepuestoController;
 use App\Http\Controllers\TurnoController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,5 +47,10 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/', [ReparacionController::class, 'store'])->name('store');
         Route::get('/{reparacion}', [ReparacionController::class, 'show'])->whereNumber('reparacion')->name('show');
         Route::post('/{reparacion}/finalizar', [ReparacionController::class, 'finish'])->whereNumber('reparacion')->name('finish');
+    });
+
+    Route::middleware('role:administrador,repuestos')->prefix('repuestos')->name('repuestos.')->group(function (): void {
+        Route::get('/crear', [RepuestoController::class, 'create'])->name('create');
+        Route::post('/', [RepuestoController::class, 'store'])->name('store');
     });
 });

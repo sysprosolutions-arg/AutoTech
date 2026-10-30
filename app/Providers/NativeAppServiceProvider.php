@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use Database\Seeders\PresupuestosMasterDataSeeder;
 use Database\Seeders\ReparacionesMasterDataSeeder;
+use Database\Seeders\RepuestosMasterDataSeeder;
 use Database\Seeders\TurnosMasterDataSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
@@ -55,6 +56,7 @@ class NativeAppServiceProvider implements ProvidesPhpIni
         foreach ([
             TurnosMasterDataSeeder::class,
             PresupuestosMasterDataSeeder::class,
+            RepuestosMasterDataSeeder::class,
             ReparacionesMasterDataSeeder::class,
         ] as $seeder) {
             Artisan::call('db:seed', [

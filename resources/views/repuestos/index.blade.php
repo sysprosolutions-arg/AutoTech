@@ -11,7 +11,14 @@
             <h1 class="page-title">Repuestos</h1>
             <p class="page-lead mb-0">Consultá las piezas del catálogo, sus proveedores y la disponibilidad actual.</p>
         </div>
-        <a class="btn btn-autotech" href="{{ route('repuestos.create') }}"><i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Registrar repuesto</a>
+        <div class="d-flex gap-2 flex-wrap">
+            <a class="btn btn-outline-secondary" href="{{ route('repuestos.reports.brands') }}">
+                <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Reporte por marca
+            </a>
+            <a class="btn btn-autotech" href="{{ route('repuestos.create') }}">
+                <i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Registrar repuesto
+            </a>
+        </div>
     </div>
 </section>
 

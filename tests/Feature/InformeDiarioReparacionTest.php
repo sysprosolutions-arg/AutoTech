@@ -77,7 +77,7 @@ class InformeDiarioReparacionTest extends TestCase
             ->assertSee('Service programado')
             ->assertSee('Martín Gómez')
             ->assertSee('Filtro de aceite (1)')
-            ->assertSee('2 h 0 min')
+            ->assertSee('2 horas')
             ->assertSee('Imprimir');
     }
 

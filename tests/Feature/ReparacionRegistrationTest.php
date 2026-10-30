@@ -207,11 +207,11 @@ class ReparacionRegistrationTest extends TestCase
             ->post('/reparaciones', [
                 'orden_trabajo_id' => $this->ordenTrabajo->id,
                 'tipo_reparacion_id' => '',
-                'tiempo_empleado_minutos' => 0,
+                'tiempo_empleado_horas' => 0,
                 'trabajos_realizados' => '',
             ])
             ->assertRedirect("/reparaciones/crear/{$this->ordenTrabajo->id}")
-            ->assertSessionHasErrors(['tipo_reparacion_id', 'tiempo_empleado_minutos', 'trabajos_realizados']);
+            ->assertSessionHasErrors(['tipo_reparacion_id', 'tiempo_empleado_horas', 'trabajos_realizados']);
 
         $this->assertDatabaseCount('reparaciones', 0);
         $this->assertSame(10, $this->repuesto->fresh()->stock);
@@ -245,7 +245,7 @@ class ReparacionRegistrationTest extends TestCase
             'empleado_id' => $this->ordenTrabajo->empleado_id,
             'tipo_reparacion_id' => $this->tipoReparacion->id,
             'estado_reparacion_id' => $this->estadoReparacionEnProceso->id,
-            'tiempo_empleado_minutos' => 120,
+            'tiempo_empleado_minutos' => 150,
         ]);
         $this->assertDatabaseCount('detalle_reparaciones', 2);
         $this->assertSame(8, $this->repuesto->fresh()->stock);
@@ -264,6 +264,7 @@ class ReparacionRegistrationTest extends TestCase
             ->assertSee('REP-000001')
             ->assertSee('Service programado')
             ->assertSee('Filtro de aceite')
+            ->assertSee('2,5 horas')
             ->assertSee('Sin incidencias registradas.');
     }
 
@@ -328,7 +329,7 @@ class ReparacionRegistrationTest extends TestCase
         return [
             'orden_trabajo_id' => $this->ordenTrabajo->id,
             'tipo_reparacion_id' => $this->tipoReparacion->id,
-            'tiempo_empleado_minutos' => 120,
+            'tiempo_empleado_horas' => 2.5,
             'trabajos_realizados' => 'Se realizó el service programado y el control general de la unidad.',
             'incidencias' => null,
             'repuestos' => [

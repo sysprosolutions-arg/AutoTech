@@ -50,7 +50,7 @@
             </div>
             <div class="d-flex align-items-center gap-4 flex-wrap">
                 <div class="report-metric"><span>Reparaciones</span><strong>{{ $reparaciones->count() }}</strong></div>
-                <div class="report-metric"><span>Tiempo total</span><strong>{{ intdiv($totalMinutos, 60) }} h {{ $totalMinutos % 60 }} min</strong></div>
+                <div class="report-metric"><span>Tiempo total</span><strong>{{ \App\Models\Reparacion::formatearMinutosComoHoras($totalMinutos) }}</strong></div>
                 <button class="btn btn-outline-secondary report-screen-actions" type="button" data-print-report><i class="bi bi-printer me-2" aria-hidden="true"></i>Imprimir</button>
             </div>
         </header>
@@ -64,7 +64,7 @@
                             <h3 class="h5 fw-bold mt-2 mb-1" id="repair-{{ $reparacion->id }}-title">{{ $reparacion->numero }} · {{ $reparacion->vehiculo->patente }}</h3>
                             <p class="text-secondary mb-0">{{ $reparacion->vehiculo->marca }} {{ $reparacion->vehiculo->modelo }} · {{ $reparacion->vehiculo->cliente->nombre }} {{ $reparacion->vehiculo->cliente->apellido }}</p>
                         </div>
-                        <div class="text-lg-end"><strong>{{ $reparacion->fecha_inicio->format('H:i') }} h</strong><small class="d-block text-secondary">{{ $reparacion->tiempo_empleado_minutos }} minutos</small></div>
+                        <div class="text-lg-end"><strong>{{ $reparacion->fecha_inicio->format('H:i') }} h</strong><small class="d-block text-secondary">{{ $reparacion->tiempoEmpleadoFormateado() }}</small></div>
                     </div>
 
                     <dl class="daily-report-data">

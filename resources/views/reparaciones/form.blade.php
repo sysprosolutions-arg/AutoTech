@@ -45,8 +45,10 @@
                         </select>
                     </div>
                     <div class="col-md-5">
-                        <label class="form-label" for="tiempo_empleado_minutos">Tiempo empleado (minutos) <span class="required-mark">*</span></label>
-                        <input class="form-control" id="tiempo_empleado_minutos" name="tiempo_empleado_minutos" type="number" min="1" max="10000" value="{{ old('tiempo_empleado_minutos') }}" placeholder="Ej.: 120" required>
+                        <label class="form-label" for="tiempo_empleado_horas">Tiempo empleado (horas) <span class="required-mark">*</span></label>
+                        <input class="form-control @error('tiempo_empleado_horas') is-invalid @enderror" id="tiempo_empleado_horas" name="tiempo_empleado_horas" type="number" min="0.01" max="166.67" step="0.25" value="{{ old('tiempo_empleado_horas') }}" placeholder="Ej.: 2,5" required>
+                        @error('tiempo_empleado_horas')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div class="form-text">Podés ingresar fracciones de hora, por ejemplo 1,5.</div>
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="trabajos_realizados">Trabajos realizados <span class="required-mark">*</span></label>

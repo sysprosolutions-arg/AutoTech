@@ -70,6 +70,19 @@ class Reparacion extends Model
         return $this->hasMany(DetalleReparacion::class);
     }
 
+    public function tiempoEmpleadoFormateado(): string
+    {
+        return self::formatearMinutosComoHoras($this->tiempo_empleado_minutos);
+    }
+
+    public static function formatearMinutosComoHoras(int $minutos): string
+    {
+        $horas = rtrim(rtrim(number_format($minutos / 60, 2, ',', ''), '0'), ',');
+        $unidad = $horas === '1' ? 'hora' : 'horas';
+
+        return "{$horas} {$unidad}";
+    }
+
     /** @return array<string, string> */
     protected function casts(): array
     {

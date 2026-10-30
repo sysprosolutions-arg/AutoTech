@@ -237,7 +237,7 @@ class ReparacionConsultationTest extends TestCase
             ->assertSee('Martín Gómez')
             ->assertSee('Service programado')
             ->assertSee('Filtro de aceite')
-            ->assertSee('120 minutos')
+            ->assertSee('2 horas')
             ->assertSee('Se detectó desgaste en una correa auxiliar.');
     }
 }

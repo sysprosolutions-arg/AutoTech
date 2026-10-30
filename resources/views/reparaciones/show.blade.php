@@ -26,7 +26,7 @@
             <div class="form-section-heading"><span class="form-section-icon"><i class="bi bi-wrench-adjustable" aria-hidden="true"></i></span><div><h2 id="repair-detail-title">Trabajo realizado</h2><p>Información técnica registrada sobre la intervención.</p></div></div>
             <dl class="detail-grid mb-0">
                 <div><dt>Tipo</dt><dd>{{ $reparacion->tipo->nombre }}</dd></div>
-                <div><dt>Tiempo empleado</dt><dd>{{ $reparacion->tiempo_empleado_minutos }} minutos</dd></div>
+                <div><dt>Tiempo empleado</dt><dd>{{ $reparacion->tiempoEmpleadoFormateado() }}</dd></div>
                 <div class="detail-grid-wide"><dt>Descripción</dt><dd>{{ $reparacion->trabajos_realizados }}</dd></div>
                 <div class="detail-grid-wide"><dt>Incidencias</dt><dd>{{ $reparacion->incidencias ?: 'Sin incidencias registradas.' }}</dd></div>
             </dl>

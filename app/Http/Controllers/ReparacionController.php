@@ -137,7 +137,7 @@ class ReparacionController extends Controller
                 'estado_reparacion_id' => $estadoEnProceso->id,
                 'registrado_por' => $user->id,
                 'fecha_inicio' => now(),
-                'tiempo_empleado_minutos' => $data['tiempo_empleado_minutos'],
+                'tiempo_empleado_minutos' => (int) round((float) $data['tiempo_empleado_horas'] * 60),
                 'trabajos_realizados' => $data['trabajos_realizados'],
                 'incidencias' => $data['incidencias'] ?? null,
             ]);

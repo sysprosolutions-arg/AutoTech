@@ -93,8 +93,15 @@
 
             <div class="col-md-6">
                 <label class="form-label" for="hora">Hora <span class="required-mark">*</span></label>
-                <input class="form-control @error('hora') is-invalid @enderror" id="hora" name="hora" type="time" value="{{ old('hora') }}" required>
+                <select class="form-select @error('hora') is-invalid @enderror" id="hora" name="hora" required>
+                    <option value="">Seleccionar horario</option>
+                    @for ($minutos = 8 * 60; $minutos <= 17 * 60; $minutos += 30)
+                        @php($horario = sprintf('%02d:%02d', intdiv($minutos, 60), $minutos % 60))
+                        <option value="{{ $horario }}" @selected(old('hora') === $horario)>{{ $horario }} h</option>
+                    @endfor
+                </select>
                 @error('hora')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <div class="form-text">Horario de atención: 08:00 a 17:00, en intervalos de 30 minutos.</div>
             </div>
 
             <div class="col-12">

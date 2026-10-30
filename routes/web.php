@@ -53,6 +53,8 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/', [RepuestoController::class, 'index'])->name('index');
         Route::get('/crear', [RepuestoController::class, 'create'])->name('create');
         Route::post('/', [RepuestoController::class, 'store'])->name('store');
+        Route::get('/{repuesto}/editar', [RepuestoController::class, 'edit'])->whereNumber('repuesto')->name('edit');
+        Route::put('/{repuesto}', [RepuestoController::class, 'update'])->whereNumber('repuesto')->name('update');
         Route::get('/{repuesto}', [RepuestoController::class, 'show'])->whereNumber('repuesto')->name('show');
     });
 });

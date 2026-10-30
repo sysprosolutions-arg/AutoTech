@@ -12,6 +12,9 @@
             <p class="page-lead mb-0">Consultá las piezas del catálogo, sus proveedores y la disponibilidad actual.</p>
         </div>
         <div class="d-flex gap-2 flex-wrap">
+            <a class="btn btn-outline-secondary" href="{{ route('repuestos.lists.alternatives') }}">
+                <i class="bi bi-tools me-2" aria-hidden="true"></i>Repuestos alternativos
+            </a>
             <a class="btn btn-outline-secondary" href="{{ route('repuestos.lists.originals') }}">
                 <i class="bi bi-patch-check me-2" aria-hidden="true"></i>Repuestos originales
             </a>

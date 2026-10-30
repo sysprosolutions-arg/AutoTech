@@ -14,9 +14,12 @@
             </div>
             <p class="page-lead mb-0 mt-2">{{ $repuesto->nombre }} · {{ $repuesto->marca }}</p>
         </div>
-        <div class="d-flex gap-2 flex-wrap"><a class="btn btn-success" href="{{ route('repuestos.stock', $repuesto) }}"><i class="bi bi-box-seam me-2" aria-hidden="true"></i>Actualizar stock</a><a class="btn btn-autotech" href="{{ route('repuestos.edit', $repuesto) }}"><i class="bi bi-pencil me-2" aria-hidden="true"></i>Modificar</a><a class="btn btn-outline-secondary" href="{{ route('repuestos.index') }}"><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver al catálogo</a></div>
+        <div class="d-flex gap-2 flex-wrap">@if($repuesto->activo)<a class="btn btn-success" href="{{ route('repuestos.stock', $repuesto) }}"><i class="bi bi-box-seam me-2" aria-hidden="true"></i>Actualizar stock</a><a class="btn btn-autotech" href="{{ route('repuestos.edit', $repuesto) }}"><i class="bi bi-pencil me-2" aria-hidden="true"></i>Modificar</a>@endif<a class="btn btn-outline-secondary" href="{{ route('repuestos.index') }}"><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver al catálogo</a></div>
     </div>
 </section>
+
+@if (session('status'))<div class="alert alert-success" role="status">{{ session('status') }}</div>@endif
+@if ($errors->any())<div class="alert alert-danger" role="alert">{{ $errors->first() }}</div>@endif
 
 <div class="row g-4">
     <div class="col-xl-8">
@@ -48,4 +51,11 @@
         </section>
     </div>
 </div>
+
+@if ($repuesto->activo)
+    <section class="content-card border-danger mt-4" aria-labelledby="delete-spare-part-title">
+        <div class="form-section-heading"><span class="form-section-icon text-danger"><i class="bi bi-trash" aria-hidden="true"></i></span><div><h2 id="delete-spare-part-title">Dar de baja</h2><p>La baja es lógica y conserva el historial del repuesto.</p></div></div>
+        <form method="POST" action="{{ route('repuestos.destroy', $repuesto) }}">@csrf @method('DELETE')<div class="form-check mb-3"><input class="form-check-input" id="confirmar" name="confirmar" type="checkbox" value="1" required><label class="form-check-label" for="confirmar">Confirmo que deseo dar de baja este repuesto.</label></div><button class="btn btn-outline-danger" type="submit">Dar de baja repuesto</button></form>
+    </section>
+@endif
 @endsection

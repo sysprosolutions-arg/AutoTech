@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/{repuesto}/stock', [RepuestoController::class, 'updateStock'])->whereNumber('repuesto')->name('stock.update');
         Route::get('/{repuesto}/editar', [RepuestoController::class, 'edit'])->whereNumber('repuesto')->name('edit');
         Route::put('/{repuesto}', [RepuestoController::class, 'update'])->whereNumber('repuesto')->name('update');
+        Route::delete('/{repuesto}', [RepuestoController::class, 'destroy'])->whereNumber('repuesto')->name('destroy');
         Route::get('/{repuesto}', [RepuestoController::class, 'show'])->whereNumber('repuesto')->name('show');
     });
 });

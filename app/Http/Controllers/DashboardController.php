@@ -29,7 +29,15 @@ class DashboardController extends Controller
                     ? 'reparaciones.index'
                     : null,
             ],
-            ['name' => 'Repuestos', 'description' => 'Stock y disponibilidad', 'icon' => 'bi-gear', 'color' => 'slate'],
+            [
+                'name' => 'Repuestos',
+                'description' => 'Stock y disponibilidad',
+                'icon' => 'bi-gear',
+                'color' => 'slate',
+                'route' => $user->roles->pluck('name')->intersect(['administrador', 'repuestos'])->isNotEmpty()
+                    ? 'repuestos.create'
+                    : null,
+            ],
             ['name' => 'Compras', 'description' => 'Abastecimiento', 'icon' => 'bi-cart3', 'color' => 'purple'],
             ['name' => 'Facturación', 'description' => 'Comprobantes y análisis', 'icon' => 'bi-receipt', 'color' => 'green'],
         ];

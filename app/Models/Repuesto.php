@@ -5,12 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['codigo', 'nombre', 'marca', 'original', 'precio_venta', 'stock', 'activo'])]
+#[Fillable(['proveedor_id', 'codigo', 'nombre', 'descripcion', 'marca', 'original', 'precio_venta', 'stock', 'activo'])]
 class Repuesto extends Model
 {
     use HasFactory;
+
+    /** @return BelongsTo<Proveedor, $this> */
+    public function proveedor(): BelongsTo
+    {
+        return $this->belongsTo(Proveedor::class);
+    }
 
     /** @return HasMany<DetallePresupuesto, $this> */
     public function detallesPresupuesto(): HasMany

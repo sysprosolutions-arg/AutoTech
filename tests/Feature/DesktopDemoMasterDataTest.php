@@ -7,6 +7,7 @@ use App\Models\Repuesto;
 use App\Models\User;
 use Database\Seeders\PresupuestosMasterDataSeeder;
 use Database\Seeders\ReparacionesMasterDataSeeder;
+use Database\Seeders\RepuestosMasterDataSeeder;
 use Database\Seeders\TurnosMasterDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
@@ -31,6 +32,7 @@ class DesktopDemoMasterDataTest extends TestCase
         $this->assertDatabaseCount('vehiculos', 4);
         $this->assertDatabaseCount('empleados', 3);
         $this->assertDatabaseCount('tipos_servicio', 5);
+        $this->assertDatabaseCount('proveedores', 3);
         $this->assertDatabaseCount('repuestos', 4);
         $this->assertDatabaseCount('tipos_reparacion', 4);
         $this->assertDatabaseCount('estados_reparacion', 3);
@@ -54,7 +56,12 @@ class DesktopDemoMasterDataTest extends TestCase
             'codigo' => 'REP-FIL-001',
             'stock' => 2,
         ]);
+        $this->assertDatabaseHas('repuestos', [
+            'codigo' => 'REP-FIL-001',
+            'descripcion' => 'Filtro original compatible con motores Toyota seleccionados.',
+        ]);
         $this->assertDatabaseCount('clientes', 3);
+        $this->assertDatabaseCount('proveedores', 3);
         $this->assertDatabaseCount('repuestos', 4);
     }
 
@@ -63,6 +70,7 @@ class DesktopDemoMasterDataTest extends TestCase
         foreach ([
             TurnosMasterDataSeeder::class,
             PresupuestosMasterDataSeeder::class,
+            RepuestosMasterDataSeeder::class,
             ReparacionesMasterDataSeeder::class,
         ] as $seeder) {
             Artisan::call('db:seed', [

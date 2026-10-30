@@ -11,6 +11,7 @@
             <h1 class="page-title">Registrar repuesto</h1>
             <p class="page-lead mb-0">Incorporá una pieza al catálogo y dejá disponible su información comercial y de stock.</p>
         </div>
+        <a class="btn btn-outline-secondary" href="{{ route('repuestos.index') }}"><i class="bi bi-search me-2" aria-hidden="true"></i>Consultar repuestos</a>
     </div>
 </section>
 

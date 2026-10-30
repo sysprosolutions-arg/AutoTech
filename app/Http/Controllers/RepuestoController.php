@@ -5,10 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SearchRepuestoRequest;
 use App\Http\Requests\StoreRepuestoRequest;
 use App\Http\Requests\UpdateRepuestoRequest;
+use App\Http\Requests\UpdateRepuestoStockRequest;
+use App\Models\MovimientoStock;
 use App\Models\Proveedor;
 use App\Models\Repuesto;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class RepuestoController extends Controller
@@ -101,6 +105,13 @@ class RepuestoController extends Controller
             ->with('status', "Repuesto {$repuesto->codigo} registrado correctamente.");
     }
 
+    public function stock(Repuesto $repuesto): View
+    {
+        $repuesto->load(['movimientosStock' => fn ($query) => $query->with('registradoPor')->latest()->limit(20)]);
+
+        return view('repuestos.stock', ['repuesto' => $repuesto]);
+    }
+
     public function show(Repuesto $repuesto): View
     {
         $repuesto->load('proveedor');
@@ -123,12 +134,43 @@ class RepuestoController extends Controller
                 'marca' => $data['marca'],
                 'original' => $data['tipo'] === 'original',
                 'precio_venta' => $data['precio_venta'],
-                'stock' => $data['stock'],
             ]);
         });
 
         return redirect()
             ->route('repuestos.show', $repuesto)
             ->with('status', "Repuesto {$repuesto->codigo} actualizado correctamente.");
+    }
+
+    public function updateStock(UpdateRepuestoStockRequest $request, Repuesto $repuesto): RedirectResponse
+    {
+        $data = $request->validated();
+        $user = $request->user();
+        abort_unless($user instanceof User, 401);
+
+        DB::transaction(function () use ($data, $repuesto, $user): void {
+            $lockedRepuesto = Repuesto::query()->lockForUpdate()->findOrFail($repuesto->id);
+            $cantidad = (int) $data['cantidad'];
+            $stockResultante = $data['operacion'] === 'entrada'
+                ? $lockedRepuesto->stock + $cantidad
+                : $lockedRepuesto->stock - $cantidad;
+
+            if ($stockResultante < 0) {
+                throw ValidationException::withMessages(['cantidad' => 'La salida supera el stock disponible.']);
+            }
+
+            MovimientoStock::query()->create([
+                'repuesto_id' => $lockedRepuesto->id,
+                'registrado_por' => $user->id,
+                'operacion' => $data['operacion'],
+                'cantidad' => $cantidad,
+                'stock_anterior' => $lockedRepuesto->stock,
+                'stock_resultante' => $stockResultante,
+                'motivo' => $data['motivo'],
+            ]);
+            $lockedRepuesto->update(['stock' => $stockResultante]);
+        }, 3);
+
+        return redirect()->route('repuestos.stock', $repuesto)->with('status', 'Stock actualizado correctamente.');
     }
 }

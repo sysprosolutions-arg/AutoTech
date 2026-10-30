@@ -12,6 +12,9 @@
             <p class="page-lead mb-0">Consultá las piezas del catálogo, sus proveedores y la disponibilidad actual.</p>
         </div>
         <div class="d-flex gap-2 flex-wrap">
+            <a class="btn btn-outline-secondary" href="{{ route('repuestos.lists.originals') }}">
+                <i class="bi bi-patch-check me-2" aria-hidden="true"></i>Repuestos originales
+            </a>
             <a class="btn btn-outline-secondary" href="{{ route('repuestos.reports.brands') }}">
                 <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Reporte por marca
             </a>

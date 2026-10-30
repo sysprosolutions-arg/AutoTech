@@ -10,6 +10,19 @@ use Illuminate\View\View;
 
 class RepuestoReportController extends Controller
 {
+    public function originals(): View
+    {
+        $repuestos = Repuesto::query()
+            ->with('proveedor')
+            ->where('activo', true)
+            ->where('original', true)
+            ->orderBy('marca')
+            ->orderBy('codigo')
+            ->get();
+
+        return view('repuestos.lists.originals', ['repuestos' => $repuestos]);
+    }
+
     public function byBrand(RepuestoMarcaReportRequest $request): View
     {
         $filters = $request->validated();

@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::middleware('role:administrador,repuestos')->prefix('repuestos')->name('repuestos.')->group(function (): void {
         Route::get('/', [RepuestoController::class, 'index'])->name('index');
+        Route::get('/listados/originales', [RepuestoReportController::class, 'originals'])->name('lists.originals');
         Route::get('/reportes/marcas', [RepuestoReportController::class, 'byBrand'])->name('reports.brands');
         Route::get('/reportes/proveedores', [RepuestoReportController::class, 'bySupplier'])->name('reports.suppliers');
         Route::get('/crear', [RepuestoController::class, 'create'])->name('create');

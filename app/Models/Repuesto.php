@@ -25,6 +25,18 @@ class Repuesto extends Model
         return $this->hasMany(DetallePresupuesto::class);
     }
 
+    /** @return HasMany<DetalleOrdenTrabajo, $this> */
+    public function detallesOrdenTrabajo(): HasMany
+    {
+        return $this->hasMany(DetalleOrdenTrabajo::class);
+    }
+
+    /** @return HasMany<DetalleReparacion, $this> */
+    public function detallesReparacion(): HasMany
+    {
+        return $this->hasMany(DetalleReparacion::class);
+    }
+
     /** @return HasMany<MovimientoStock, $this> */
     public function movimientosStock(): HasMany
     {

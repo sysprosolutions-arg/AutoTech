@@ -11,6 +11,7 @@ use App\Models\Proveedor;
 use App\Models\Repuesto;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -69,6 +70,8 @@ class RepuestoController extends Controller
 
     public function edit(Repuesto $repuesto): View
     {
+        abort_unless($repuesto->activo, 404);
+
         return view('repuestos.edit', [
             'proveedores' => Proveedor::query()
                 ->where(function ($query) use ($repuesto): void {
@@ -107,6 +110,8 @@ class RepuestoController extends Controller
 
     public function stock(Repuesto $repuesto): View
     {
+        abort_unless($repuesto->activo, 404);
+
         $repuesto->load(['movimientosStock' => fn ($query) => $query->with('registradoPor')->latest()->limit(20)]);
 
         return view('repuestos.stock', ['repuesto' => $repuesto]);
@@ -123,6 +128,8 @@ class RepuestoController extends Controller
 
     public function update(UpdateRepuestoRequest $request, Repuesto $repuesto): RedirectResponse
     {
+        abort_unless($repuesto->activo, 404);
+
         $data = $request->validated();
 
         DB::transaction(function () use ($data, $repuesto): void {
@@ -144,6 +151,8 @@ class RepuestoController extends Controller
 
     public function updateStock(UpdateRepuestoStockRequest $request, Repuesto $repuesto): RedirectResponse
     {
+        abort_unless($repuesto->activo, 404);
+
         $data = $request->validated();
         $user = $request->user();
         abort_unless($user instanceof User, 401);
@@ -172,5 +181,35 @@ class RepuestoController extends Controller
         }, 3);
 
         return redirect()->route('repuestos.stock', $repuesto)->with('status', 'Stock actualizado correctamente.');
+    }
+
+    public function destroy(Request $request, Repuesto $repuesto): RedirectResponse
+    {
+        $request->validate(
+            ['confirmar' => ['accepted']],
+            ['confirmar.accepted' => 'Confirmá la baja del repuesto para continuar.'],
+        );
+
+        DB::transaction(function () use ($repuesto): void {
+            $lockedRepuesto = Repuesto::query()->lockForUpdate()->findOrFail($repuesto->id);
+
+            if (! $lockedRepuesto->activo) {
+                throw ValidationException::withMessages(['repuesto' => 'El repuesto ya se encuentra inactivo.']);
+            }
+
+            if ($lockedRepuesto->stock > 0) {
+                throw ValidationException::withMessages(['repuesto' => 'No se puede dar de baja un repuesto con existencias disponibles.']);
+            }
+
+            if ($lockedRepuesto->detallesPresupuesto()->exists()
+                || $lockedRepuesto->detallesOrdenTrabajo()->exists()
+                || $lockedRepuesto->detallesReparacion()->exists()) {
+                throw ValidationException::withMessages(['repuesto' => 'El repuesto posee operaciones relacionadas y debe conservarse activo.']);
+            }
+
+            $lockedRepuesto->update(['activo' => false]);
+        }, 3);
+
+        return redirect()->route('repuestos.index')->with('status', "Repuesto {$repuesto->codigo} dado de baja correctamente.");
     }
 }

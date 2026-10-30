@@ -7,6 +7,7 @@ use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\PresupuestoDecisionController;
 use App\Http\Controllers\ReparacionController;
 use App\Http\Controllers\RepuestoController;
+use App\Http\Controllers\RepuestoReportController;
 use App\Http\Controllers\TurnoController;
 use Illuminate\Support\Facades\Route;
 
@@ -51,6 +52,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::middleware('role:administrador,repuestos')->prefix('repuestos')->name('repuestos.')->group(function (): void {
         Route::get('/', [RepuestoController::class, 'index'])->name('index');
+        Route::get('/reportes/marcas', [RepuestoReportController::class, 'byBrand'])->name('reports.brands');
         Route::get('/crear', [RepuestoController::class, 'create'])->name('create');
         Route::post('/', [RepuestoController::class, 'store'])->name('store');
         Route::get('/{repuesto}/stock', [RepuestoController::class, 'stock'])->whereNumber('repuesto')->name('stock');

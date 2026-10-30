@@ -14,7 +14,7 @@
             </div>
             <p class="page-lead mb-0 mt-2">{{ $repuesto->nombre }} · {{ $repuesto->marca }}</p>
         </div>
-        <a class="btn btn-outline-secondary" href="{{ route('repuestos.index') }}"><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver al catálogo</a>
+        <div class="d-flex gap-2 flex-wrap"><a class="btn btn-autotech" href="{{ route('repuestos.edit', $repuesto) }}"><i class="bi bi-pencil me-2" aria-hidden="true"></i>Modificar</a><a class="btn btn-outline-secondary" href="{{ route('repuestos.index') }}"><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver al catálogo</a></div>
     </div>
 </section>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SearchRepuestoRequest;
 use App\Http\Requests\StoreRepuestoRequest;
+use App\Http\Requests\UpdateRepuestoRequest;
 use App\Models\Proveedor;
 use App\Models\Repuesto;
 use Illuminate\Http\RedirectResponse;
@@ -62,6 +63,23 @@ class RepuestoController extends Controller
         ]);
     }
 
+    public function edit(Repuesto $repuesto): View
+    {
+        return view('repuestos.edit', [
+            'proveedores' => Proveedor::query()
+                ->where(function ($query) use ($repuesto): void {
+                    $query->where('activo', true);
+
+                    if ($repuesto->proveedor_id !== null) {
+                        $query->orWhereKey($repuesto->proveedor_id);
+                    }
+                })
+                ->orderBy('razon_social')
+                ->get(),
+            'repuesto' => $repuesto,
+        ]);
+    }
+
     public function store(StoreRepuestoRequest $request): RedirectResponse
     {
         $data = $request->validated();
@@ -90,5 +108,27 @@ class RepuestoController extends Controller
         return view('repuestos.show', [
             'repuesto' => $repuesto,
         ]);
+    }
+
+    public function update(UpdateRepuestoRequest $request, Repuesto $repuesto): RedirectResponse
+    {
+        $data = $request->validated();
+
+        DB::transaction(function () use ($data, $repuesto): void {
+            $repuesto->update([
+                'proveedor_id' => $data['proveedor_id'],
+                'codigo' => $data['codigo'],
+                'nombre' => $data['nombre'],
+                'descripcion' => $data['descripcion'],
+                'marca' => $data['marca'],
+                'original' => $data['tipo'] === 'original',
+                'precio_venta' => $data['precio_venta'],
+                'stock' => $data['stock'],
+            ]);
+        });
+
+        return redirect()
+            ->route('repuestos.show', $repuesto)
+            ->with('status', "Repuesto {$repuesto->codigo} actualizado correctamente.");
     }
 }

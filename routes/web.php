@@ -50,7 +50,9 @@ Route::middleware('auth')->group(function (): void {
     });
 
     Route::middleware('role:administrador,repuestos')->prefix('repuestos')->name('repuestos.')->group(function (): void {
+        Route::get('/', [RepuestoController::class, 'index'])->name('index');
         Route::get('/crear', [RepuestoController::class, 'create'])->name('create');
         Route::post('/', [RepuestoController::class, 'store'])->name('store');
+        Route::get('/{repuesto}', [RepuestoController::class, 'show'])->whereNumber('repuesto')->name('show');
     });
 });

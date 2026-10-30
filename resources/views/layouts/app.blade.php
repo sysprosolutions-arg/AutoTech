@@ -24,14 +24,14 @@
             @foreach ([
                 ['Clientes', 'bi-people', null],
                 ['Proveedores', 'bi-truck', null],
-                ['Repuestos', 'bi-gear', $currentUser?->roles->pluck('name')->intersect(['administrador', 'repuestos'])->isNotEmpty() ? 'repuestos.create' : null],
+                ['Repuestos', 'bi-gear', $currentUser?->roles->pluck('name')->intersect(['administrador', 'repuestos'])->isNotEmpty() ? 'repuestos.index' : null],
                 ['Compras', 'bi-cart3', null],
                 ['Reparaciones', 'bi-tools', $currentUser?->roles->pluck('name')->intersect(['administrador', 'reparacion'])->isNotEmpty() ? 'reparaciones.index' : null],
                 ['Turnos', 'bi-calendar3', 'turnos.index'],
                 ['Facturación', 'bi-receipt', null],
             ] as [$label, $icon, $routeName])
                 @if ($routeName)
-                    @php($routePattern = $routeName === 'reparaciones.index' ? 'reparaciones.*' : ($routeName === 'repuestos.create' ? 'repuestos.*' : 'turnos.*'))
+                    @php($routePattern = in_array($routeName, ['reparaciones.index', 'repuestos.index'], true) ? str($routeName)->before('.').'.*' : 'turnos.*')
                     <a class="sidebar-link {{ request()->routeIs($routePattern) ? 'active' : '' }}" href="{{ route($routeName) }}" @if(request()->routeIs($routePattern)) aria-current="page" @endif>
                         <i class="bi {{ $icon }}" aria-hidden="true"></i>
                         <span>{{ $label }}</span>

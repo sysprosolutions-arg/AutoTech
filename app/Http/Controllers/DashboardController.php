@@ -35,7 +35,7 @@ class DashboardController extends Controller
                 'icon' => 'bi-gear',
                 'color' => 'slate',
                 'route' => $user->roles->pluck('name')->intersect(['administrador', 'repuestos'])->isNotEmpty()
-                    ? 'repuestos.create'
+                    ? 'repuestos.index'
                     : null,
             ],
             ['name' => 'Compras', 'description' => 'Abastecimiento', 'icon' => 'bi-cart3', 'color' => 'purple'],

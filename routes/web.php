@@ -24,6 +24,8 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/maquetas/panel', [DashboardController::class, 'concepts'])->name('dashboard.concepts.index');
+    Route::get('/maquetas/panel/{concept}', [DashboardController::class, 'concept'])->name('dashboard.concepts.show');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     Route::middleware('role:administrador,turnos')->prefix('turnos')->name('turnos.')->group(function (): void {

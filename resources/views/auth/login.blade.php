@@ -8,10 +8,11 @@
         <div class="d-flex align-items-center gap-3 position-relative z-1">
             <span class="brand-mark" aria-hidden="true">AT</span>
             <span class="brand-wordmark">AutoTech <small>Gestión integral del taller</small></span>
+            <span class="auth-f1-flag" aria-label="Bandera a cuadros de Fórmula 1" role="img"></span>
         </div>
 
         <div class="auth-copy">
-            <div class="auth-eyebrow">Operación conectada</div>
+            <div class="auth-eyebrow">Japón · Suzuka / Operación conectada</div>
             <h1 class="auth-title" id="auth-visual-title">Cada reparación, bajo control.</h1>
             <p class="auth-lead">
                 Centralizá turnos, órdenes de trabajo, repuestos y facturación en una experiencia clara para todo el equipo.

@@ -5,7 +5,7 @@
 
 @section('content')
 <section class="mb-4">
-    <div class="page-eyebrow">ATSA-10/12 · Reparación</div>
+    <div class="page-eyebrow">Operación del taller · Reparación</div>
     <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
         <div><div class="d-flex align-items-center gap-3 flex-wrap"><h1 class="page-title mb-0">{{ $reparacion->numero }}</h1><span class="state-badge state-{{ $reparacion->estado->codigo }}">{{ $reparacion->estado->nombre }}</span></div><p class="page-lead mb-0 mt-2">{{ $reparacion->vehiculo->patente }} · {{ $reparacion->vehiculo->cliente->nombre }} {{ $reparacion->vehiculo->cliente->apellido }}</p></div>
         <div class="d-flex gap-2 flex-wrap">

@@ -5,7 +5,7 @@
 
 @section('content')
 <section class="mb-4">
-    <div class="page-eyebrow">ATSA-34 · Registro</div>
+    <div class="page-eyebrow">Catálogo e inventario · Registro</div>
     <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
         <div><h1 class="page-title">Registrar repuesto</h1><p class="page-lead mb-0">Incorporá una pieza al catálogo y dejá disponible su información comercial y de stock.</p></div>
         <a class="btn btn-outline-secondary" href="{{ route('repuestos.index') }}"><i class="bi bi-search me-2" aria-hidden="true"></i>Consultar repuestos</a>

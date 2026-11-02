@@ -5,7 +5,7 @@
 
 @section('content')
 <section class="mb-4 report-screen-actions">
-    <div class="page-eyebrow">ATSA-13 · Informe diario</div>
+    <div class="page-eyebrow">Operación del taller · Informe diario</div>
     <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
         <div>
             <h1 class="page-title">Informe diario de reparaciones</h1>

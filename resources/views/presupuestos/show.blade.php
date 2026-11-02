@@ -5,7 +5,7 @@
 
 @section('content')
 <section class="mb-4">
-    <div class="page-eyebrow">ATSA-52 · Presupuesto</div>
+    <div class="page-eyebrow">Presupuesto de reparación</div>
     <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
         <div>
             <div class="d-flex align-items-center gap-3 flex-wrap">

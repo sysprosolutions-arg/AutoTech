@@ -7,7 +7,7 @@
     <title>@yield('title', 'Acceso') · {{ config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="auth-body">
+<body class="auth-body auth-suzuka">
     @yield('content')
 </body>
 </html>

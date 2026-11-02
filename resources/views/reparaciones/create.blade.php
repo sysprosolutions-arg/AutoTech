@@ -5,7 +5,7 @@
 
 @section('content')
 <section class="mb-4">
-    <div class="page-eyebrow">ATSA-10 · Registro</div>
+    <div class="page-eyebrow">Operación del taller · Registro</div>
     <h1 class="page-title">Registrar reparación</h1>
     <p class="page-lead mb-0">Seleccioná una Orden de Trabajo emitida desde un presupuesto aprobado para comenzar el registro técnico.</p>
 </section>

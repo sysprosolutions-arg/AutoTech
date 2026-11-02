@@ -7,7 +7,7 @@
 @php($oldParts = collect(old('repuestos', []))->keyBy('detalle_id'))
 
 <section class="mb-4">
-    <div class="page-eyebrow">ATSA-10 · {{ $ordenTrabajo->numero }}</div>
+    <div class="page-eyebrow">Orden de trabajo · {{ $ordenTrabajo->numero }}</div>
     <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
         <div><h1 class="page-title">Registrar reparación</h1><p class="page-lead mb-0">Documentá el trabajo efectivamente realizado sobre {{ $ordenTrabajo->vehiculo->patente }}.</p></div>
         <a class="btn btn-outline-secondary" href="{{ route('reparaciones.create') }}"><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver a órdenes</a>

@@ -7,7 +7,7 @@
     <title>@yield('title', 'Panel') · {{ config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="app-body @yield('body-class')">
+<body class="app-body @yield('body-class', 'suzuka-app')">
     @php($currentUser = auth()->user())
     <aside class="app-sidebar" data-app-sidebar>
         <a class="sidebar-brand" href="{{ route('dashboard') }}">
@@ -81,6 +81,9 @@
         </header>
 
         <div class="app-content">
+            @unless (request()->routeIs('dashboard.concepts.*'))
+                @include('dashboard-concepts.partials.top-module-nav')
+            @endunless
             @yield('content')
         </div>
     </main>

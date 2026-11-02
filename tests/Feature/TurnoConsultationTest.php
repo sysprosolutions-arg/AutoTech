@@ -81,7 +81,10 @@ class TurnoConsultationTest extends TestCase
             ->assertSee("#{$turno->id}")
             ->assertSee('Martínez, Ana')
             ->assertSee('AB123CD')
-            ->assertSee('Pendiente');
+            ->assertSee('Pendiente')
+            ->assertSee('suzuka-app', false)
+            ->assertSee('Operaciones del taller')
+            ->assertSee('aria-current="page"', false);
     }
 
     public function test_appointments_can_be_searched_by_identifier_client_and_vehicle(): void

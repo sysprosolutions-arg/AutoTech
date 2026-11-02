@@ -5,7 +5,7 @@
 
 @section('content')
 <section class="mb-4">
-    <div class="page-eyebrow">ATSA-37 · Consulta</div>
+    <div class="page-eyebrow">Catálogo e inventario</div>
     <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
         <div>
             <h1 class="page-title">Repuestos</h1>

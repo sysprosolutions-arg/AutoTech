@@ -5,7 +5,7 @@
 
 @section('content')
 <section class="mb-4">
-    <div class="page-eyebrow">ATSA-49 · Registro</div>
+    <div class="page-eyebrow">Agenda del taller · Registro</div>
     <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
         <div>
             <h1 class="page-title">Registrar turno</h1>

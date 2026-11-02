@@ -5,7 +5,7 @@
 
 @section('content')
 <section class="mb-4">
-    <div class="page-eyebrow">ATSA-39 · Reporte</div>
+    <div class="page-eyebrow">Catálogo e inventario · Reporte</div>
     <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3">
         <div>
             <h1 class="page-title">Repuestos por marca</h1>

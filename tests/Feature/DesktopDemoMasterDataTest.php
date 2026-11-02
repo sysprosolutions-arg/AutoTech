@@ -19,7 +19,7 @@ class DesktopDemoMasterDataTest extends TestCase
 
     public function test_sprint_two_uses_a_new_desktop_release_version(): void
     {
-        $this->assertSame('0.3.0', config('nativephp.version'));
+        $this->assertSame('0.4.2', config('nativephp.version'));
     }
 
     public function test_master_data_is_added_to_an_existing_desktop_installation(): void

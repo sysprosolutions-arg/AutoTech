@@ -10,7 +10,7 @@ dashboard-concept-body concept-{{ $concept['slug'] }}
 @section('content')
 <div class="concept-workbench">
     <nav class="concept-switcher" aria-label="Cambiar propuesta visual">
-        <a class="concept-switcher-back" href="{{ route('dashboard.concepts.index') }}"><i class="bi bi-grid-3x2-gap" aria-hidden="true"></i><span>Ver las 6</span></a>
+        <a class="concept-switcher-back" href="{{ route('dashboard.concepts.index') }}"><i class="bi bi-grid-3x2-gap" aria-hidden="true"></i><span>Ver las 27</span></a>
         <div>
             @foreach ($concepts as $option)
                 <a class="{{ $option['slug'] === $concept['slug'] ? 'active' : '' }}" href="{{ route('dashboard.concepts.show', $option['slug']) }}" title="{{ $option['name'] }}">{{ $option['number'] }}</a>

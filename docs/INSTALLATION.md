@@ -13,13 +13,15 @@ No se necesita PHP, Composer, Node.js, npm, MySQL, Visual Studio Code ni una cop
 
 ### Instalación
 
-1. Descargar `AutoTech-0.4.2-setup.exe` desde la [Release AutoTech 0.4.2](https://github.com/sysprosolutions-arg/AutoTech/releases/tag/v0.4.2).
-2. Verificar, si se desea, que el SHA-256 sea `A8A5E8B93B0AE894B65446146A6A7CD4637AA8256EDFF1F02F4C95A96321FD49`.
+1. Descargar `AutoTech-0.4.3-setup.exe` desde la [Release AutoTech 0.4.3](https://github.com/sysprosolutions-arg/AutoTech/releases/tag/v0.4.3).
+2. Verificar, si se desea, que el SHA-256 sea `838B29390F6F1C9EA157CCEDF5E1ABD5FF2F86CCD2B0693CA10241ECA0E5465C`.
 3. Ejecutar el instalador.
 4. Si Windows muestra una advertencia de reputación, seleccionar **Más información** y **Ejecutar de todas formas**. El MVP académico no posee una firma comercial.
 5. Abrir AutoTech desde el menú Inicio.
 
 La aplicación instala su propio runtime y utiliza una base SQLite por usuario en `%APPDATA%\AutoTech\database\database.sqlite`.
+
+La versión 0.4.3 corrige el bloqueo indefinido en **Preparando el sistema del taller** que podía producirse en Windows por la combinación de OPcache y ASLR. Si existe una versión anterior, cerrar AutoTech e instalar 0.4.3 sobre ella. La aplicación de escritorio selecciona un puerto local disponible, por lo que puede ejecutarse al mismo tiempo que la versión web.
 
 ## 2. Código fuente en Windows
 
@@ -145,6 +147,10 @@ php artisan serve --port=8001
 ```
 
 En ese caso, abrir `http://127.0.0.1:8001`.
+
+### El demo queda detenido en “Preparando el sistema del taller”
+
+Comprobar que se instaló AutoTech 0.4.3 o posterior. Las versiones anteriores podían fallar al iniciar el PHP embebido en algunas configuraciones de Windows. Cerrar cualquier instancia de AutoTech e instalar nuevamente la versión publicada más reciente.
 
 ## 6. Desarrollo del escritorio y compilación
 

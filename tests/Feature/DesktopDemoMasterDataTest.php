@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Cliente;
 use App\Models\Repuesto;
 use App\Models\User;
+use App\Providers\NativeAppServiceProvider;
 use Database\Seeders\PresupuestosMasterDataSeeder;
 use Database\Seeders\ReparacionesMasterDataSeeder;
 use Database\Seeders\RepuestosMasterDataSeeder;
@@ -17,9 +18,17 @@ class DesktopDemoMasterDataTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_sprint_two_uses_a_new_desktop_release_version(): void
+    public function test_desktop_demo_uses_the_current_release_version(): void
     {
-        $this->assertSame('0.4.2', config('nativephp.version'));
+        $this->assertSame('0.4.3', config('nativephp.version'));
+    }
+
+    public function test_desktop_php_disables_opcache_for_windows_aslr_compatibility(): void
+    {
+        $phpIni = app(NativeAppServiceProvider::class)->phpIni();
+
+        $this->assertSame('0', $phpIni['opcache.enable']);
+        $this->assertSame('0', $phpIni['opcache.enable_cli']);
     }
 
     public function test_master_data_is_added_to_an_existing_desktop_installation(): void

@@ -56,15 +56,16 @@ Las migraciones son compatibles con ambos motores. NativePHP selecciona SQLite, 
 
 ## Diseño visual
 
-La interfaz utiliza un lenguaje visual de **taller tecnológico profesional**:
+La interfaz adopta el concepto **AutoTech Telemetría**, inspirado en la operación en vivo del circuito de Suzuka y aplicado de forma uniforme al login, panel general y módulos funcionales:
 
-- antracita y petróleo para estructura, confianza y contraste;
-- ámbar como referencia a señalética y herramientas;
-- superficies claras para formularios y datos;
-- tipografía del sistema para operar sin recursos externos;
-- componentes accesibles, foco visible, etiquetas explícitas y diseño responsive.
+- rojo, negro, blanco y rosa sakura como paleta principal;
+- fondos claros con flores de cerezo y referencias visuales japonesas de baja intensidad;
+- navegación horizontal superior para los siete módulos;
+- panel general con circuito de Suzuka, flujo de reparación, telemetría, estados de puestos, prioridades y alertas;
+- tarjetas, tablas y formularios con jerarquía tipográfica ampliada, foco visible, etiquetas explícitas y diseño responsive;
+- textos operativos en castellano y logo propio de AutoTech.
 
-El login divide identidad y propuesta de valor de la zona operativa. El sistema autenticado usa barra lateral persistente, encabezado contextual y tarjetas modulares; este patrón será compartido por los siete módulos.
+El login conserva la identidad visual y separa la propuesta de valor del formulario seguro. Tras autenticarse, el encabezado contextual y la navegación superior se mantienen en Turnos, Reparaciones y Repuestos para evitar cambios de lenguaje visual entre pantallas.
 
 ## Trazabilidad de los RNF
 

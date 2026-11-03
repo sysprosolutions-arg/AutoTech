@@ -38,7 +38,10 @@ class NativeAppServiceProvider implements ProvidesPhpIni
      */
     public function phpIni(): array
     {
-        return [];
+        return [
+            'opcache.enable' => '0',
+            'opcache.enable_cli' => '0',
+        ];
     }
 
     private function seedDesktopDemoIfNecessary(): void

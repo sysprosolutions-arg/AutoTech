@@ -47,7 +47,8 @@ La credencial incluida es exclusivamente de demostración local.
 
 | Entorno | Motor | Motivo |
 | --- | --- | --- |
-| Desarrollo web | MySQL 8 o MariaDB 11 | Coincide con ATSA-6 y permite una base central compartida. |
+| Desarrollo web local | SQLite persistente | Permite clonar y probar el proyecto sin instalar un servidor de base de datos. |
+| Desarrollo compartido | MySQL 8 o MariaDB 11 | Alternativa para centralizar los datos de varios usuarios o equipos. |
 | Pruebas | SQLite temporal | Aislamiento, velocidad y repetibilidad. |
 | Demo instalable | SQLite persistente en AppData | Cero dependencias para el evaluador y datos locales por PC. |
 

@@ -2,11 +2,13 @@
 
 ## Perfiles
 
-### Web local con MySQL/MariaDB
+### Web local con SQLite
 
-Copiar `.env.example` a `.env`, generar `APP_KEY` y configurar `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD`. Cada desarrollador mantiene sus credenciales solo en `.env`.
+Es el perfil recomendado para descargar el repositorio y probarlo sin instalar un servidor de base de datos. Copiar `.env.example` a `.env`, generar `APP_KEY`, crear `database/database.sqlite` y ejecutar las migraciones con seeders.
 
-En esta computadora se detectó MariaDB 11.8 en el puerto `3307`; la cuenta administrativa requiere su contraseña local. No se modifica esa cuenta desde el proyecto.
+### Web compartida con MySQL/MariaDB
+
+Cambiar `DB_CONNECTION` y completar `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` en `.env`. Cada desarrollador mantiene sus credenciales solo en ese archivo local.
 
 ### Pruebas
 
@@ -16,6 +18,8 @@ PHPUnit utiliza SQLite en memoria según `phpunit.xml`. Las pruebas no dependen 
 
 NativePHP empaqueta Laravel, PHP, Electron, los recursos compilados y una base SQLite. En el primer inicio migra la base ubicada en AppData y carga el usuario demo si todavía no existen usuarios.
 
+La instalación completa para una computadora nueva está en [INSTALLATION.md](INSTALLATION.md).
+
 ## Comandos habituales
 
 ```powershell
@@ -23,11 +27,15 @@ NativePHP empaqueta Laravel, PHP, Electron, los recursos compilados y una base S
 composer install
 npm install
 
-# Base web
+# Base local SQLite
+New-Item -ItemType File -Path database\database.sqlite -Force
 php artisan migrate --seed
 
-# Desarrollo web
-composer dev
+# Desarrollo web: terminal 1
+php artisan serve
+
+# Desarrollo web: terminal 2
+npm run dev
 
 # Calidad
 php artisan test

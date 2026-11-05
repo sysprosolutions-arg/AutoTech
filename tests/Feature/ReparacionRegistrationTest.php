@@ -51,6 +51,10 @@ class ReparacionRegistrationTest extends TestCase
 
     private Repuesto $repuesto;
 
+    private Empleado $empleadoAlternativo;
+
+    private int $detalleServicioId;
+
     private int $detalleRepuestoId;
 
     protected function setUp(): void
@@ -100,6 +104,13 @@ class ReparacionRegistrationTest extends TestCase
             'especialidad_id' => $especialidad->id,
             'estado_empleado_id' => $estadoEmpleado->id,
         ]);
+        $this->empleadoAlternativo = Empleado::query()->create([
+            'legajo' => 'EMP-002',
+            'nombre' => 'Lucía',
+            'apellido' => 'Fernández',
+            'especialidad_id' => $especialidad->id,
+            'estado_empleado_id' => $estadoEmpleado->id,
+        ]);
         $servicio = TipoServicio::query()->create([
             'codigo' => 'service-programado',
             'nombre' => 'Service programado',
@@ -146,12 +157,13 @@ class ReparacionRegistrationTest extends TestCase
             'emitida_por' => $this->responsableReparacion->id,
             'fecha_emision' => now(),
         ]);
-        $this->ordenTrabajo->detalles()->create([
+        $detalleServicio = $this->ordenTrabajo->detalles()->create([
             'tipo_servicio_id' => $servicio->id,
             'descripcion' => $servicio->nombre,
             'cantidad' => 1,
             'precio_referencia' => '85000.00',
         ]);
+        $this->detalleServicioId = $detalleServicio->id;
         $detalleRepuesto = $this->ordenTrabajo->detalles()->create([
             'repuesto_id' => $this->repuesto->id,
             'descripcion' => $this->repuesto->nombre,
@@ -285,6 +297,107 @@ class ReparacionRegistrationTest extends TestCase
         ]);
     }
 
+    public function test_responsible_user_can_open_the_repair_edit_form(): void
+    {
+        $this->actingAs($this->responsableReparacion)
+            ->post('/reparaciones', $this->validPayload());
+        $repair = Reparacion::query()->firstOrFail();
+
+        $this->actingAs($this->responsableReparacion)
+            ->get(route('reparaciones.edit', $repair))
+            ->assertOk()
+            ->assertSee('Modificar reparación')
+            ->assertSee('Fernández, Lucía')
+            ->assertSee('Service programado')
+            ->assertSee('Filtro de aceite');
+    }
+
+    public function test_repair_can_be_modified_with_services_mechanic_parts_and_localized_time(): void
+    {
+        $this->actingAs($this->responsableReparacion)
+            ->post('/reparaciones', $this->validPayload());
+        $repair = Reparacion::query()->firstOrFail();
+
+        $this->actingAs($this->responsableReparacion)
+            ->put(route('reparaciones.update', $repair), $this->validUpdatePayload())
+            ->assertRedirect(route('reparaciones.show', $repair))
+            ->assertSessionHas('status');
+
+        $this->assertDatabaseHas('reparaciones', [
+            'id' => $repair->id,
+            'empleado_id' => $this->empleadoAlternativo->id,
+            'tipo_reparacion_id' => $this->tipoReparacion->id,
+            'tiempo_empleado_minutos' => 90,
+            'trabajos_realizados' => 'Se corrigió el detalle técnico de la reparación.',
+            'incidencias' => 'Sin novedades luego del control final.',
+        ]);
+        $this->assertDatabaseHas('detalle_reparaciones', [
+            'reparacion_id' => $repair->id,
+            'tipo' => 'servicio',
+            'cantidad' => 1,
+        ]);
+        $this->assertDatabaseHas('detalle_reparaciones', [
+            'reparacion_id' => $repair->id,
+            'tipo' => 'repuesto',
+            'repuesto_id' => $this->repuesto->id,
+            'cantidad' => 1,
+        ]);
+        $this->assertSame(9, $this->repuesto->fresh()->stock);
+    }
+
+    public function test_invalid_repair_modification_preserves_data_details_and_stock(): void
+    {
+        $this->actingAs($this->responsableReparacion)
+            ->post('/reparaciones', $this->validPayload());
+        $repair = Reparacion::query()->firstOrFail();
+        $payload = $this->validUpdatePayload();
+        $payload['trabajos_realizados'] = '';
+        $payload['repuestos'][0]['cantidad'] = 3;
+
+        $this->actingAs($this->responsableReparacion)
+            ->from(route('reparaciones.edit', $repair))
+            ->put(route('reparaciones.update', $repair), $payload)
+            ->assertRedirect(route('reparaciones.edit', $repair))
+            ->assertSessionHasErrors(['trabajos_realizados', 'repuestos.0.cantidad']);
+
+        $this->assertDatabaseHas('reparaciones', [
+            'id' => $repair->id,
+            'empleado_id' => $this->ordenTrabajo->empleado_id,
+            'tiempo_empleado_minutos' => 150,
+        ]);
+        $this->assertDatabaseHas('detalle_reparaciones', [
+            'reparacion_id' => $repair->id,
+            'repuesto_id' => $this->repuesto->id,
+            'cantidad' => 2,
+        ]);
+        $this->assertSame(8, $this->repuesto->fresh()->stock);
+    }
+
+    public function test_cancelled_repair_cannot_be_modified(): void
+    {
+        $this->actingAs($this->responsableReparacion)
+            ->post('/reparaciones', $this->validPayload());
+        $repair = Reparacion::query()->firstOrFail();
+        $cancelledState = EstadoReparacion::query()->create(['codigo' => 'cancelada', 'nombre' => 'Cancelada']);
+        $repair->update(['estado_reparacion_id' => $cancelledState->id]);
+
+        $this->actingAs($this->responsableReparacion)
+            ->get(route('reparaciones.edit', $repair))
+            ->assertRedirect(route('reparaciones.show', $repair))
+            ->assertSessionHas('error');
+
+        $this->actingAs($this->responsableReparacion)
+            ->from(route('reparaciones.show', $repair))
+            ->put(route('reparaciones.update', $repair), $this->validUpdatePayload())
+            ->assertSessionHasErrors('estado');
+
+        $this->assertDatabaseHas('reparaciones', [
+            'id' => $repair->id,
+            'tiempo_empleado_minutos' => 150,
+        ]);
+        $this->assertSame(8, $this->repuesto->fresh()->stock);
+    }
+
     public function test_a_part_outside_the_work_order_cannot_be_registered(): void
     {
         $payload = $this->validPayload();
@@ -351,6 +464,22 @@ class ReparacionRegistrationTest extends TestCase
             'incidencias' => null,
             'repuestos' => [
                 ['detalle_id' => $this->detalleRepuestoId, 'cantidad' => 2],
+            ],
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    private function validUpdatePayload(): array
+    {
+        return [
+            'empleado_id' => $this->empleadoAlternativo->id,
+            'tipo_reparacion_id' => $this->tipoReparacion->id,
+            'tiempo_empleado_horas' => '1,5',
+            'trabajos_realizados' => 'Se corrigió el detalle técnico de la reparación.',
+            'incidencias' => 'Sin novedades luego del control final.',
+            'servicios' => [$this->detalleServicioId],
+            'repuestos' => [
+                ['detalle_id' => $this->detalleRepuestoId, 'cantidad' => 1],
             ],
         ];
     }

@@ -9,6 +9,9 @@
     <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
         <div><div class="d-flex align-items-center gap-3 flex-wrap"><h1 class="page-title mb-0">{{ $reparacion->numero }}</h1><span class="state-badge state-{{ $reparacion->estado->codigo }}">{{ $reparacion->estado->nombre }}</span></div><p class="page-lead mb-0 mt-2">{{ $reparacion->vehiculo->patente }} · {{ $reparacion->vehiculo->cliente->nombre }} {{ $reparacion->vehiculo->cliente->apellido }}</p></div>
         <div class="d-flex gap-2 flex-wrap">
+            @if ($reparacion->canBeModified())
+                <a class="btn btn-outline-secondary" href="{{ route('reparaciones.edit', $reparacion) }}"><i class="bi bi-pencil-square me-2" aria-hidden="true"></i>Modificar reparación</a>
+            @endif
             @if ($reparacion->estado->codigo === 'en-proceso')
                 <form method="POST" action="{{ route('reparaciones.finish', $reparacion) }}">@csrf<button class="btn btn-success px-4" type="submit"><i class="bi bi-check2-circle me-2" aria-hidden="true"></i>Finalizar reparación</button></form>
             @endif
@@ -18,6 +21,7 @@
 </section>
 
 @if (session('status'))<div class="alert alert-success" role="status"><i class="bi bi-check-circle me-2" aria-hidden="true"></i>{{ session('status') }}</div>@endif
+@if (session('error'))<div class="alert alert-danger" role="alert"><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ session('error') }}</div>@endif
 @if ($errors->any())<div class="alert alert-danger" role="alert">{{ $errors->first() }}</div>@endif
 
 <div class="row g-4">

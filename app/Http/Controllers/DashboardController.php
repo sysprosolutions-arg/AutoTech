@@ -62,12 +62,22 @@ class DashboardController extends Controller
         abort_unless($user instanceof User, 401);
         $user->loadMissing('roles');
 
-        $today = CarbonImmutable::today();
+        $now = CarbonImmutable::now();
+        $today = $now->startOfDay();
         $metrics = [
-            'appointmentsToday' => Turno::query()->whereDate('fecha', $today)->count(),
+            'appointmentsToday' => Turno::query()
+                ->whereDate('fecha', $today)
+                ->whereHas('estado', fn (Builder $query): Builder => $query->where('codigo', '!=', 'cancelado'))
+                ->count(),
             'activeRepairs' => Reparacion::query()->whereHas('estado', fn (Builder $query): Builder => $query->where('codigo', 'en-proceso'))->count(),
             'completedRepairsToday' => Reparacion::query()->whereNotNull('fecha_fin')->whereDate('fecha_fin', $today)->count(),
-            'pendingBudgets' => Presupuesto::query()->doesntHave('aprobacion')->count(),
+            'pendingBudgets' => Presupuesto::query()
+                ->where(function (Builder $query): void {
+                    $query
+                        ->doesntHave('aprobacion')
+                        ->orWhereHas('aprobacion', fn (Builder $approvalQuery): Builder => $approvalQuery->where('estado', 'pendiente'));
+                })
+                ->count(),
             'lowStock' => Repuesto::query()->where('activo', true)->where('stock', '<=', 5)->count(),
             'activeClients' => Cliente::query()->where('activo', true)->count(),
             'activeSuppliers' => Proveedor::query()->where('activo', true)->count(),
@@ -75,7 +85,16 @@ class DashboardController extends Controller
 
         $upcomingAppointments = Turno::query()
             ->with(['cliente', 'vehiculo', 'estado'])
-            ->whereDate('fecha', '>=', $today)
+            ->whereHas('estado', fn (Builder $query): Builder => $query->whereNotIn('codigo', ['atendido', 'cancelado']))
+            ->where(function (Builder $query) use ($now, $today): void {
+                $query
+                    ->whereDate('fecha', '>', $today)
+                    ->orWhere(function (Builder $todayQuery) use ($now, $today): void {
+                        $todayQuery
+                            ->whereDate('fecha', $today)
+                            ->whereTime('hora', '>=', $now->format('H:i:s'));
+                    });
+            })
             ->orderBy('fecha')
             ->orderBy('hora')
             ->limit(4)
@@ -96,10 +115,11 @@ class DashboardController extends Controller
             ->limit(7)
             ->get();
 
-        $weeklyLoad = collect(range(6, 0))->map(function (int $daysAgo) use ($today): array {
+        $weeklyLoad = collect(range(4, 0))->map(function (int $daysAgo) use ($today): array {
             $date = $today->subDays($daysAgo);
 
             return [
+                'date' => $date->toDateString(),
                 'label' => $date->locale('es')->isoFormat('dd'),
                 'value' => Turno::query()->whereDate('fecha', $date)->count(),
             ];
@@ -113,10 +133,11 @@ class DashboardController extends Controller
             'upcomingAppointments' => $upcomingAppointments,
             'user' => $user,
             'weeklyLoad' => $weeklyLoad,
+            'dashboardUpdatedAt' => $now,
         ];
     }
 
-    /** @return array<int, array<string, string|null>> */
+    /** @return array<int, array<string, mixed>> */
     private function modules(User $user): array
     {
         $roleNames = $user->roles->pluck('name');
@@ -124,12 +145,22 @@ class DashboardController extends Controller
         return [
             ['name' => 'Clientes', 'description' => 'Personas y vehículos', 'icon' => 'bi-people', 'color' => 'teal'],
             ['name' => 'Proveedores', 'description' => 'Red de abastecimiento', 'icon' => 'bi-truck', 'color' => 'coral'],
-            ['name' => 'Turnos', 'description' => 'Agenda del taller', 'icon' => 'bi-calendar3', 'color' => 'blue', 'route' => 'turnos.index'],
+            [
+                'name' => 'Turnos',
+                'description' => 'Agenda del taller',
+                'icon' => 'bi-calendar3',
+                'color' => 'blue',
+                'visible' => $roleNames->intersect(['administrador', 'turnos'])->isNotEmpty(),
+                'route' => $roleNames->intersect(['administrador', 'turnos'])->isNotEmpty()
+                    ? 'turnos.index'
+                    : null,
+            ],
             [
                 'name' => 'Reparaciones',
                 'description' => 'Órdenes en seguimiento',
                 'icon' => 'bi-tools',
                 'color' => 'amber',
+                'visible' => $roleNames->intersect(['administrador', 'reparacion'])->isNotEmpty(),
                 'route' => $roleNames->intersect(['administrador', 'reparacion'])->isNotEmpty()
                     ? 'reparaciones.index'
                     : null,
@@ -139,6 +170,7 @@ class DashboardController extends Controller
                 'description' => 'Stock y disponibilidad',
                 'icon' => 'bi-gear',
                 'color' => 'slate',
+                'visible' => $roleNames->intersect(['administrador', 'repuestos'])->isNotEmpty(),
                 'route' => $roleNames->intersect(['administrador', 'repuestos'])->isNotEmpty()
                     ? 'repuestos.index'
                     : null,

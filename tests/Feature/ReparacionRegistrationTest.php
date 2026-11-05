@@ -197,7 +197,9 @@ class ReparacionRegistrationTest extends TestCase
             ->assertOk()
             ->assertSee('Service programado')
             ->assertSee('Filtro de aceite')
-            ->assertSee('Mantenimiento preventivo');
+            ->assertSee('Mantenimiento preventivo')
+            ->assertSee('min="0.25"', false)
+            ->assertSee('step="0.25"', false);
     }
 
     public function test_incomplete_repair_is_rejected_without_partial_records(): void
@@ -266,6 +268,21 @@ class ReparacionRegistrationTest extends TestCase
             ->assertSee('Filtro de aceite')
             ->assertSee('2,5 horas')
             ->assertSee('Sin incidencias registradas.');
+    }
+
+    public function test_repair_time_accepts_a_localized_decimal_value(): void
+    {
+        $payload = $this->validPayload();
+        $payload['tiempo_empleado_horas'] = '1,5';
+
+        $this->actingAs($this->responsableReparacion)
+            ->post('/reparaciones', $payload)
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('reparaciones', [
+            'orden_trabajo_id' => $this->ordenTrabajo->id,
+            'tiempo_empleado_minutos' => 90,
+        ]);
     }
 
     public function test_a_part_outside_the_work_order_cannot_be_registered(): void

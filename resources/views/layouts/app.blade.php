@@ -22,14 +22,15 @@
                 <span>Inicio</span>
             </a>
             @foreach ([
-                ['Clientes', 'bi-people', null],
-                ['Proveedores', 'bi-truck', null],
-                ['Repuestos', 'bi-gear', $currentUser?->roles->pluck('name')->intersect(['administrador', 'repuestos'])->isNotEmpty() ? 'repuestos.index' : null],
-                ['Compras', 'bi-cart3', null],
-                ['Reparaciones', 'bi-tools', $currentUser?->roles->pluck('name')->intersect(['administrador', 'reparacion'])->isNotEmpty() ? 'reparaciones.index' : null],
-                ['Turnos', 'bi-calendar3', 'turnos.index'],
-                ['Facturación', 'bi-receipt', null],
-            ] as [$label, $icon, $routeName])
+                ['Clientes', 'bi-people', null, true],
+                ['Proveedores', 'bi-truck', null, true],
+                ['Repuestos', 'bi-gear', $currentUser?->roles->pluck('name')->intersect(['administrador', 'repuestos'])->isNotEmpty() ? 'repuestos.index' : null, $currentUser?->roles->pluck('name')->intersect(['administrador', 'repuestos'])->isNotEmpty()],
+                ['Compras', 'bi-cart3', null, true],
+                ['Reparaciones', 'bi-tools', $currentUser?->roles->pluck('name')->intersect(['administrador', 'reparacion'])->isNotEmpty() ? 'reparaciones.index' : null, $currentUser?->roles->pluck('name')->intersect(['administrador', 'reparacion'])->isNotEmpty()],
+                ['Turnos', 'bi-calendar3', $currentUser?->roles->pluck('name')->intersect(['administrador', 'turnos'])->isNotEmpty() ? 'turnos.index' : null, $currentUser?->roles->pluck('name')->intersect(['administrador', 'turnos'])->isNotEmpty()],
+                ['Facturación', 'bi-receipt', null, true],
+            ] as [$label, $icon, $routeName, $isVisible])
+                @continue(! $isVisible)
                 @if ($routeName)
                     @php($routePattern = in_array($routeName, ['reparaciones.index', 'repuestos.index'], true) ? str($routeName)->before('.').'.*' : 'turnos.*')
                     <a class="sidebar-link {{ request()->routeIs($routePattern) ? 'active' : '' }}" href="{{ route($routeName) }}" @if(request()->routeIs($routePattern)) aria-current="page" @endif>

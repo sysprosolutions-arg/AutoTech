@@ -3,6 +3,47 @@ import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
 
 document.addEventListener('DOMContentLoaded', () => {
+    const liveClock = document.querySelector('[data-live-clock]');
+
+    if (liveClock) {
+        const timeFormatter = new Intl.DateTimeFormat('es-AR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+        });
+        const updateClock = () => {
+            liveClock.textContent = timeFormatter.format(new Date());
+        };
+
+        updateClock();
+        window.setInterval(updateClock, 1000);
+    }
+
+    const autoRefreshDashboard = document.querySelector('[data-dashboard-auto-refresh]');
+
+    if (autoRefreshDashboard) {
+        const configuredInterval = Number(autoRefreshDashboard.dataset.refreshInterval ?? 60000);
+        const refreshInterval = Number.isFinite(configuredInterval) ? Math.max(configuredInterval, 30000) : 60000;
+        let refreshPending = false;
+
+        window.setTimeout(() => {
+            if (document.hidden) {
+                refreshPending = true;
+
+                return;
+            }
+
+            window.location.reload();
+        }, refreshInterval);
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && refreshPending) {
+                window.location.reload();
+            }
+        });
+    }
+
     document.querySelectorAll('[data-password-toggle]').forEach((button) => {
         button.addEventListener('click', () => {
             const inputId = button.getAttribute('aria-controls');

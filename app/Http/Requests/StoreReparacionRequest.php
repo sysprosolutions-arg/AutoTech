@@ -22,7 +22,7 @@ class StoreReparacionRequest extends FormRequest
         return [
             'orden_trabajo_id' => ['required', 'integer', Rule::exists('ordenes_trabajo', 'id'), Rule::unique('reparaciones', 'orden_trabajo_id')],
             'tipo_reparacion_id' => ['required', 'integer', Rule::exists('tipos_reparacion', 'id')->where('activo', true)],
-            'tiempo_empleado_horas' => ['required', 'numeric', 'min:0.01', 'max:166.67'],
+            'tiempo_empleado_horas' => ['required', 'numeric', 'min:0.25', 'max:166.67'],
             'trabajos_realizados' => ['required', 'string', 'max:2000'],
             'incidencias' => ['nullable', 'string', 'max:2000'],
             'repuestos' => ['nullable', 'array'],
@@ -39,6 +39,17 @@ class StoreReparacionRequest extends FormRequest
             ],
             'repuestos.*.cantidad' => ['required', 'integer', 'min:1', 'max:99'],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $timeInHours = $this->input('tiempo_empleado_horas');
+
+        if (is_string($timeInHours)) {
+            $this->merge([
+                'tiempo_empleado_horas' => str_replace(',', '.', trim($timeInHours)),
+            ]);
+        }
     }
 
     /** @return array<int, callable> */
@@ -99,7 +110,7 @@ class StoreReparacionRequest extends FormRequest
             'tipo_reparacion_id.exists' => 'El tipo de reparación seleccionado no está disponible.',
             'tiempo_empleado_horas.required' => 'Ingresá el tiempo empleado en horas.',
             'tiempo_empleado_horas.numeric' => 'El tiempo empleado debe expresarse en horas.',
-            'tiempo_empleado_horas.min' => 'El tiempo empleado debe ser mayor a cero.',
+            'tiempo_empleado_horas.min' => 'El tiempo empleado mínimo es de 0,25 horas.',
             'tiempo_empleado_horas.max' => 'El tiempo empleado no puede superar las 166,67 horas.',
             'trabajos_realizados.required' => 'Describí los trabajos realizados.',
             'trabajos_realizados.max' => 'La descripción no puede superar los 2000 caracteres.',

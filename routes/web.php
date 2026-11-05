@@ -6,6 +6,7 @@ use App\Http\Controllers\InformeDiarioReparacionController;
 use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\PresupuestoDecisionController;
 use App\Http\Controllers\ReparacionController;
+use App\Http\Controllers\ReparacionTypeReportController;
 use App\Http\Controllers\RepuestoController;
 use App\Http\Controllers\RepuestoReportController;
 use App\Http\Controllers\TurnoController;
@@ -48,6 +49,7 @@ Route::middleware('auth')->group(function (): void {
     Route::middleware('role:administrador,reparacion')->prefix('reparaciones')->name('reparaciones.')->group(function (): void {
         Route::get('/', [ReparacionController::class, 'index'])->name('index');
         Route::get('/informes/diario', InformeDiarioReparacionController::class)->name('reports.daily');
+        Route::get('/reportes/tipos', ReparacionTypeReportController::class)->name('reports.types');
         Route::get('/crear', [ReparacionController::class, 'create'])->name('create');
         Route::get('/crear/{ordenTrabajo}', [ReparacionController::class, 'createFromOrder'])->whereNumber('ordenTrabajo')->name('create.from-order');
         Route::post('/', [ReparacionController::class, 'store'])->name('store');

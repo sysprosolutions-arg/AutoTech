@@ -11,9 +11,10 @@
             <h1 class="page-title">Turnos</h1>
             <p class="page-lead mb-0">Consultá la agenda y accedé al detalle registrado de cada atención.</p>
         </div>
-        <a class="btn btn-autotech px-4" href="{{ route('turnos.create') }}">
-            <i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Nuevo turno
-        </a>
+        <div class="d-flex gap-2 flex-wrap">
+            <a class="btn btn-outline-secondary" href="{{ route('turnos.list', $filters) }}"><i class="bi bi-list-check me-2" aria-hidden="true"></i>Emitir listado</a>
+            <a class="btn btn-autotech px-4" href="{{ route('turnos.create') }}"><i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Nuevo turno</a>
+        </div>
     </div>
 </section>
 

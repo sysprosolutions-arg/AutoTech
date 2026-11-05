@@ -9,6 +9,7 @@ use App\Models\Cliente;
 use App\Models\EstadoTurno;
 use App\Models\Turno;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -18,38 +19,7 @@ class TurnoController extends Controller
     public function index(SearchTurnoRequest $request): View
     {
         $filters = $request->validated();
-        $buscar = trim((string) ($filters['buscar'] ?? ''));
-
-        $turnos = Turno::query()
-            ->with(['cliente', 'vehiculo', 'estado'])
-            ->when($buscar !== '', function ($query) use ($buscar): void {
-                $query->where(function ($query) use ($buscar): void {
-                    if (ctype_digit($buscar)) {
-                        $query->orWhere('id', (int) $buscar);
-                    }
-
-                    $query
-                        ->orWhereHas('cliente', fn ($query) => $query
-                            ->where('nombre', 'like', "%{$buscar}%")
-                            ->orWhere('apellido', 'like', "%{$buscar}%")
-                            ->orWhere('dni', 'like', "%{$buscar}%"))
-                        ->orWhereHas('vehiculo', fn ($query) => $query
-                            ->where('patente', 'like', "%{$buscar}%")
-                            ->orWhere('marca', 'like', "%{$buscar}%")
-                            ->orWhere('modelo', 'like', "%{$buscar}%"));
-                });
-            })
-            ->when(
-                $filters['estado'] ?? null,
-                fn ($query, string $estado) => $query->whereHas(
-                    'estado',
-                    fn ($query) => $query->where('codigo', $estado),
-                ),
-            )
-            ->when(
-                $filters['fecha'] ?? null,
-                fn ($query, string $fecha) => $query->whereDate('fecha', $fecha),
-            )
+        $turnos = $this->filteredAppointments($filters)
             ->orderByDesc('fecha')
             ->orderByDesc('hora')
             ->paginate(10)
@@ -57,6 +27,20 @@ class TurnoController extends Controller
 
         return view('turnos.index', [
             'estados' => EstadoTurno::query()->orderBy('nombre')->get(),
+            'filters' => $filters,
+            'turnos' => $turnos,
+        ]);
+    }
+
+    public function listing(SearchTurnoRequest $request): View
+    {
+        $filters = $request->validated();
+        $turnos = $this->filteredAppointments($filters)
+            ->orderBy('fecha')
+            ->orderBy('hora')
+            ->get();
+
+        return view('turnos.list', [
             'filters' => $filters,
             'turnos' => $turnos,
         ]);
@@ -164,5 +148,42 @@ class TurnoController extends Controller
         return redirect()
             ->route('turnos.show', $turno)
             ->with('status', "Turno #{$turno->id} modificado correctamente.");
+    }
+
+    /** @param array<string, mixed> $filters */
+    private function filteredAppointments(array $filters): Builder
+    {
+        $search = trim((string) ($filters['buscar'] ?? ''));
+
+        return Turno::query()
+            ->with(['cliente', 'vehiculo', 'estado'])
+            ->when($search !== '', function (Builder $query) use ($search): void {
+                $query->where(function (Builder $query) use ($search): void {
+                    if (ctype_digit($search)) {
+                        $query->orWhere('id', (int) $search);
+                    }
+
+                    $query
+                        ->orWhereHas('cliente', fn (Builder $query): Builder => $query
+                            ->where('nombre', 'like', "%{$search}%")
+                            ->orWhere('apellido', 'like', "%{$search}%")
+                            ->orWhere('dni', 'like', "%{$search}%"))
+                        ->orWhereHas('vehiculo', fn (Builder $query): Builder => $query
+                            ->where('patente', 'like', "%{$search}%")
+                            ->orWhere('marca', 'like', "%{$search}%")
+                            ->orWhere('modelo', 'like', "%{$search}%"));
+                });
+            })
+            ->when(
+                $filters['estado'] ?? null,
+                fn (Builder $query, string $state): Builder => $query->whereHas(
+                    'estado',
+                    fn (Builder $query): Builder => $query->where('codigo', $state),
+                ),
+            )
+            ->when(
+                $filters['fecha'] ?? null,
+                fn (Builder $query, string $date): Builder => $query->whereDate('fecha', $date),
+            );
     }
 }

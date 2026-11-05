@@ -1071,6 +1071,67 @@ textarea {
     min-width: 4px;
 }
 
+.monthly-chart {
+    align-items: end;
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: repeat(12, minmax(42px, 1fr));
+    min-width: 680px;
+}
+
+.monthly-column {
+    display: grid;
+    gap: 0.4rem;
+    text-align: center;
+}
+
+.monthly-column > strong {
+    color: #17161c;
+    font-size: 0.82rem;
+}
+
+.monthly-column > small {
+    color: var(--at-muted);
+    font-size: 0.67rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.monthly-bar-track {
+    align-items: end;
+    background: #eadfe3;
+    border-radius: 8px 8px 3px 3px;
+    display: flex;
+    height: 180px;
+    overflow: hidden;
+}
+
+.monthly-bar-track span {
+    background: linear-gradient(180deg, #ed3159, #e10600);
+    border-radius: inherit;
+    display: block;
+    min-height: 0;
+    width: 100%;
+}
+
+.report-state-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.report-state-list div {
+    align-items: center;
+    border-bottom: 1px solid var(--at-border);
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+}
+
+.report-state-list strong {
+    color: #e10600;
+    font-size: 1.3rem;
+}
+
 .daily-report-data {
     display: grid;
     gap: 1rem;

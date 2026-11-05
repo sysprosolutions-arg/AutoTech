@@ -9,6 +9,7 @@ use App\Http\Controllers\ReparacionController;
 use App\Http\Controllers\ReparacionTypeReportController;
 use App\Http\Controllers\RepuestoController;
 use App\Http\Controllers\RepuestoReportController;
+use App\Http\Controllers\TurnoClientReportController;
 use App\Http\Controllers\TurnoController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,7 @@ Route::middleware('auth')->group(function (): void {
     Route::middleware('role:administrador,turnos')->prefix('turnos')->name('turnos.')->group(function (): void {
         Route::get('/', [TurnoController::class, 'index'])->name('index');
         Route::get('/listado', [TurnoController::class, 'listing'])->name('list');
+        Route::get('/reportes/cliente', TurnoClientReportController::class)->name('reports.client');
         Route::get('/crear', [TurnoController::class, 'create'])->name('create');
         Route::post('/', [TurnoController::class, 'store'])->name('store');
         Route::get('/{turno}/presupuesto/crear', [PresupuestoController::class, 'create'])->whereNumber('turno')->name('presupuesto.create');

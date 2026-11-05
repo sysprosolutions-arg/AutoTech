@@ -33,6 +33,8 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/crear', [TurnoController::class, 'create'])->name('create');
         Route::post('/', [TurnoController::class, 'store'])->name('store');
         Route::get('/{turno}/presupuesto/crear', [PresupuestoController::class, 'create'])->whereNumber('turno')->name('presupuesto.create');
+        Route::get('/{turno}/editar', [TurnoController::class, 'edit'])->whereNumber('turno')->name('edit');
+        Route::put('/{turno}', [TurnoController::class, 'update'])->whereNumber('turno')->name('update');
         Route::get('/{turno}', [TurnoController::class, 'show'])->whereNumber('turno')->name('show');
     });
 

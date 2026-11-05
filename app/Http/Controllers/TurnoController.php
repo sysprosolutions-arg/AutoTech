@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SearchTurnoRequest;
 use App\Http\Requests\StoreTurnoRequest;
+use App\Http\Requests\UpdateTurnoRequest;
 use App\Models\Cliente;
 use App\Models\EstadoTurno;
 use App\Models\Turno;
@@ -114,5 +115,54 @@ class TurnoController extends Controller
         return view('turnos.show', [
             'turno' => $turno,
         ]);
+    }
+
+    public function edit(Turno $turno): View|RedirectResponse
+    {
+        $turno->load('estado');
+
+        if (! $turno->canBeModified()) {
+            return redirect()
+                ->route('turnos.show', $turno)
+                ->with('error', 'El turno no puede modificarse porque se encuentra finalizado o cancelado.');
+        }
+
+        $clientes = Cliente::query()
+            ->where('activo', true)
+            ->whereHas('vehiculos', fn ($query) => $query->where('activo', true))
+            ->with(['vehiculos' => fn ($query) => $query
+                ->where('activo', true)
+                ->orderBy('patente')])
+            ->orderBy('apellido')
+            ->orderBy('nombre')
+            ->get();
+
+        return view('turnos.edit', [
+            'clientes' => $clientes,
+            'estados' => EstadoTurno::query()
+                ->whereIn('codigo', $turno->allowedDestinationStateCodes())
+                ->orderBy('nombre')
+                ->get(),
+            'turno' => $turno,
+        ]);
+    }
+
+    public function update(UpdateTurnoRequest $request, Turno $turno): RedirectResponse
+    {
+        DB::transaction(function () use ($request, $turno): void {
+            $turno->update($request->safe()->only([
+                'cliente_id',
+                'vehiculo_id',
+                'estado_turno_id',
+                'fecha',
+                'hora',
+                'motivo',
+                'observaciones',
+            ]));
+        });
+
+        return redirect()
+            ->route('turnos.show', $turno)
+            ->with('status', "Turno #{$turno->id} modificado correctamente.");
     }
 }

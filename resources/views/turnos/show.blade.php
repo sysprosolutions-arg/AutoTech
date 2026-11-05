@@ -4,6 +4,20 @@
 @section('context', 'Gestión de turnos')
 
 @section('content')
+@if (session('status'))
+    <div class="alert alert-success d-flex align-items-center gap-2" role="status">
+        <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+        <span>{{ session('status') }}</span>
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+        <span>{{ session('error') }}</span>
+    </div>
+@endif
+
 <section class="mb-4">
     <div class="page-eyebrow">Agenda del taller · Detalle</div>
     <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
@@ -15,6 +29,9 @@
             <p class="page-lead mb-0 mt-2">Información registrada para la atención del vehículo.</p>
         </div>
         <div class="d-flex gap-2 flex-wrap">
+            @if (in_array($turno->estado->codigo, ['pendiente', 'confirmado'], true))
+                <a class="btn btn-outline-secondary" href="{{ route('turnos.edit', $turno) }}"><i class="bi bi-pencil-square me-2" aria-hidden="true"></i>Modificar turno</a>
+            @endif
             @if ($turno->presupuesto)
                 <a class="btn btn-autotech px-4" href="{{ route('presupuestos.show', $turno->presupuesto) }}"><i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>Ver presupuesto</a>
             @else

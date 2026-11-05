@@ -72,6 +72,27 @@ class Turno extends Model
         return $this->hasOne(Presupuesto::class);
     }
 
+    /** @return array<int, string> */
+    public function allowedDestinationStateCodes(): array
+    {
+        $this->loadMissing('estado');
+
+        return match ($this->estado->codigo) {
+            'pendiente' => ['pendiente', 'confirmado', 'cancelado'],
+            'confirmado' => ['confirmado', 'atendido', 'cancelado'],
+            'atendido' => ['atendido'],
+            'cancelado' => ['cancelado'],
+            default => [$this->estado->codigo],
+        };
+    }
+
+    public function canBeModified(): bool
+    {
+        $this->loadMissing('estado');
+
+        return in_array($this->estado->codigo, ['pendiente', 'confirmado'], true);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

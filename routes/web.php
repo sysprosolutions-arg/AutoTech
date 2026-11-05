@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/crear', [ReparacionController::class, 'create'])->name('create');
         Route::get('/crear/{ordenTrabajo}', [ReparacionController::class, 'createFromOrder'])->whereNumber('ordenTrabajo')->name('create.from-order');
         Route::post('/', [ReparacionController::class, 'store'])->name('store');
+        Route::get('/{reparacion}/editar', [ReparacionController::class, 'edit'])->whereNumber('reparacion')->name('edit');
+        Route::put('/{reparacion}', [ReparacionController::class, 'update'])->whereNumber('reparacion')->name('update');
         Route::get('/{reparacion}', [ReparacionController::class, 'show'])->whereNumber('reparacion')->name('show');
         Route::post('/{reparacion}/finalizar', [ReparacionController::class, 'finish'])->whereNumber('reparacion')->name('finish');
     });

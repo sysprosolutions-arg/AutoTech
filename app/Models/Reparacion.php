@@ -83,6 +83,13 @@ class Reparacion extends Model
         return "{$horas} {$unidad}";
     }
 
+    public function canBeModified(): bool
+    {
+        $this->loadMissing('estado');
+
+        return $this->estado->codigo !== 'cancelada';
+    }
+
     /** @return array<string, string> */
     protected function casts(): array
     {

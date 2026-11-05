@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SearchReparacionRequest;
 use App\Http\Requests\StoreReparacionRequest;
+use App\Http\Requests\UpdateReparacionRequest;
 use App\Models\DetalleOrdenTrabajo;
+use App\Models\Empleado;
 use App\Models\EstadoOrdenTrabajo;
 use App\Models\EstadoReparacion;
 use App\Models\EstadoTurno;
@@ -217,6 +219,124 @@ class ReparacionController extends Controller
         ]);
 
         return view('reparaciones.show', ['reparacion' => $reparacion]);
+    }
+
+    public function edit(Reparacion $reparacion): View|RedirectResponse
+    {
+        $reparacion->load([
+            'estado',
+            'detalles',
+            'ordenTrabajo.presupuesto',
+            'ordenTrabajo.turno.cliente',
+            'ordenTrabajo.vehiculo',
+            'ordenTrabajo.detalles.tipoServicio',
+            'ordenTrabajo.detalles.repuesto',
+        ]);
+
+        if (! $reparacion->canBeModified()) {
+            return redirect()
+                ->route('reparaciones.show', $reparacion)
+                ->with('error', 'La reparación no puede modificarse porque está cancelada.');
+        }
+
+        return view('reparaciones.edit', [
+            'empleados' => Empleado::query()
+                ->whereHas('estado', fn ($query) => $query->where('codigo', 'activo'))
+                ->with('especialidad')
+                ->orderBy('apellido')
+                ->orderBy('nombre')
+                ->get(),
+            'reparacion' => $reparacion,
+            'tiposReparacion' => TipoReparacion::query()->where('activo', true)->orderBy('nombre')->get(),
+        ]);
+    }
+
+    public function update(UpdateReparacionRequest $request, Reparacion $reparacion): RedirectResponse
+    {
+        $data = $request->validated();
+
+        DB::transaction(function () use ($data, $reparacion): void {
+            $reparacion = Reparacion::query()
+                ->with(['estado', 'detalles', 'ordenTrabajo.detalles.tipoServicio', 'ordenTrabajo.detalles.repuesto'])
+                ->lockForUpdate()
+                ->findOrFail($reparacion->id);
+
+            if (! $reparacion->canBeModified()) {
+                throw ValidationException::withMessages([
+                    'estado' => 'La reparación no puede modificarse porque está cancelada.',
+                ]);
+            }
+
+            foreach ($reparacion->detalles->where('tipo', 'repuesto') as $oldPartDetail) {
+                Repuesto::query()
+                    ->whereKey($oldPartDetail->repuesto_id)
+                    ->lockForUpdate()
+                    ->increment('stock', $oldPartDetail->cantidad);
+            }
+
+            $reparacion->detalles()->delete();
+            $workOrderDetails = $reparacion->ordenTrabajo->detalles->keyBy('id');
+            $newDetails = collect();
+
+            foreach ($data['servicios'] as $workOrderDetailId) {
+                $workOrderDetail = $workOrderDetails->get((int) $workOrderDetailId);
+
+                if (! $workOrderDetail instanceof DetalleOrdenTrabajo || $workOrderDetail->tipo_servicio_id === null) {
+                    throw ValidationException::withMessages([
+                        'servicios' => 'Uno de los servicios no pertenece a la Orden de Trabajo.',
+                    ]);
+                }
+
+                $newDetails->push([
+                    'tipo' => 'servicio',
+                    'tipo_servicio_id' => $workOrderDetail->tipo_servicio_id,
+                    'repuesto_id' => null,
+                    'descripcion' => $workOrderDetail->descripcion,
+                    'cantidad' => $workOrderDetail->cantidad,
+                ]);
+            }
+
+            foreach ($data['repuestos'] ?? [] as $item) {
+                $workOrderDetail = $workOrderDetails->get((int) $item['detalle_id']);
+
+                if (! $workOrderDetail instanceof DetalleOrdenTrabajo || $workOrderDetail->repuesto_id === null) {
+                    throw ValidationException::withMessages([
+                        'repuestos' => 'Uno de los repuestos no pertenece a la Orden de Trabajo.',
+                    ]);
+                }
+
+                $part = Repuesto::query()->lockForUpdate()->findOrFail($workOrderDetail->repuesto_id);
+                $quantity = (int) $item['cantidad'];
+
+                if ($quantity > $workOrderDetail->cantidad || $quantity > $part->stock) {
+                    throw ValidationException::withMessages([
+                        'repuestos' => "No hay disponibilidad suficiente de {$part->nombre}.",
+                    ]);
+                }
+
+                $part->decrement('stock', $quantity);
+                $newDetails->push([
+                    'tipo' => 'repuesto',
+                    'tipo_servicio_id' => null,
+                    'repuesto_id' => $part->id,
+                    'descripcion' => $workOrderDetail->descripcion,
+                    'cantidad' => $quantity,
+                ]);
+            }
+
+            $reparacion->update([
+                'empleado_id' => $data['empleado_id'],
+                'tipo_reparacion_id' => $data['tipo_reparacion_id'],
+                'tiempo_empleado_minutos' => (int) round((float) $data['tiempo_empleado_horas'] * 60),
+                'trabajos_realizados' => $data['trabajos_realizados'],
+                'incidencias' => $data['incidencias'] ?? null,
+            ]);
+            $reparacion->detalles()->createMany($newDetails->all());
+        }, 3);
+
+        return redirect()
+            ->route('reparaciones.show', $reparacion)
+            ->with('status', "Reparación {$reparacion->numero} modificada correctamente.");
     }
 
     public function finish(Reparacion $reparacion): RedirectResponse

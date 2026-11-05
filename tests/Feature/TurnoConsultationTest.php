@@ -62,12 +62,16 @@ class TurnoConsultationTest extends TestCase
     public function test_guest_cannot_access_the_appointment_list(): void
     {
         $this->get('/turnos')->assertRedirect('/login');
+        $this->get('/turnos/listado')->assertRedirect('/login');
     }
 
     public function test_user_without_an_allowed_role_cannot_access_the_appointment_list(): void
     {
         $this->actingAs(User::factory()->create())
             ->get('/turnos')
+            ->assertForbidden();
+        $this->actingAs(User::factory()->create())
+            ->get('/turnos/listado')
             ->assertForbidden();
     }
 
@@ -147,6 +151,34 @@ class TurnoConsultationTest extends TestCase
             ->assertSee('09:30 h')
             ->assertSee('Ruido en el tren delantero.')
             ->assertSee('Responsable Agenda');
+    }
+
+    public function test_responsible_user_can_emit_a_complete_appointment_list(): void
+    {
+        $turno = $this->createAppointment();
+
+        $this->actingAs($this->responsableTurnos)
+            ->get(route('turnos.list'))
+            ->assertOk()
+            ->assertSee('Listado de turnos')
+            ->assertSee("#{$turno->id}")
+            ->assertSee('03/11/2026')
+            ->assertSee('09:30 h')
+            ->assertSee('Martínez, Ana')
+            ->assertSee('AB123CD')
+            ->assertSee('Pendiente')
+            ->assertSee('Imprimir listado');
+    }
+
+    public function test_appointment_list_respects_filters_and_reports_empty_results(): void
+    {
+        $this->createAppointment();
+
+        $this->actingAs($this->responsableTurnos)
+            ->get(route('turnos.list', ['buscar' => 'ZZ999ZZ']))
+            ->assertOk()
+            ->assertSee('No existen turnos para emitir')
+            ->assertDontSee('AB123CD');
     }
 
     /**

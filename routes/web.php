@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::middleware('role:administrador,turnos')->prefix('turnos')->name('turnos.')->group(function (): void {
         Route::get('/', [TurnoController::class, 'index'])->name('index');
+        Route::get('/listado', [TurnoController::class, 'listing'])->name('list');
         Route::get('/crear', [TurnoController::class, 'create'])->name('create');
         Route::post('/', [TurnoController::class, 'store'])->name('store');
         Route::get('/{turno}/presupuesto/crear', [PresupuestoController::class, 'create'])->whereNumber('turno')->name('presupuesto.create');

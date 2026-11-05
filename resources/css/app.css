@@ -1087,6 +1087,8 @@ textarea {
     }
 }
 
+.suzuka-app .ssl-car:nth-child(1) circle { fill:#ff00d4; }.suzuka-app .ssl-car:nth-child(2) circle { fill:#00a878; }.suzuka-app .ssl-car:nth-child(3) circle { fill:#ff8a00; }.suzuka-app .ssl-car:nth-child(4) circle { fill:#478cff; }.suzuka-app .ssl-car:nth-child(5) circle { fill:#e10600; }.suzuka-app .ssl-car:nth-child(6) circle { fill:#7c4dff; }.suzuka-app .ssl-car:nth-child(7) circle { fill:#00a6df; }.suzuka-app .ssl-car text { font-size:12px; letter-spacing:.02em; }
+
 @media (max-width: 767.98px) {
     .daily-report-header,
     .daily-report-item-heading {

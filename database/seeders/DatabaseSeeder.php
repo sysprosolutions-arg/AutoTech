@@ -46,5 +46,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PresupuestosMasterDataSeeder::class);
         $this->call(RepuestosMasterDataSeeder::class);
         $this->call(ReparacionesMasterDataSeeder::class);
+        $this->call(DemoOperationalDataSeeder::class);
     }
 }

@@ -4,9 +4,9 @@
     $navigationModules = $modules ?? [
         ['name' => 'Clientes', 'icon' => 'bi-people', 'route' => null, 'pattern' => null],
         ['name' => 'Proveedores', 'icon' => 'bi-truck', 'route' => null, 'pattern' => null],
-        ['name' => 'Turnos', 'icon' => 'bi-calendar3', 'route' => 'turnos.index', 'pattern' => 'turnos.*'],
-        ['name' => 'Reparaciones', 'icon' => 'bi-tools', 'route' => $navigationRoleNames->intersect(['administrador', 'reparacion'])->isNotEmpty() ? 'reparaciones.index' : null, 'pattern' => 'reparaciones.*'],
-        ['name' => 'Repuestos', 'icon' => 'bi-gear', 'route' => $navigationRoleNames->intersect(['administrador', 'repuestos'])->isNotEmpty() ? 'repuestos.index' : null, 'pattern' => 'repuestos.*'],
+        ['name' => 'Turnos', 'icon' => 'bi-calendar3', 'route' => $navigationRoleNames->intersect(['administrador', 'turnos'])->isNotEmpty() ? 'turnos.index' : null, 'pattern' => 'turnos.*', 'visible' => $navigationRoleNames->intersect(['administrador', 'turnos'])->isNotEmpty()],
+        ['name' => 'Reparaciones', 'icon' => 'bi-tools', 'route' => $navigationRoleNames->intersect(['administrador', 'reparacion'])->isNotEmpty() ? 'reparaciones.index' : null, 'pattern' => 'reparaciones.*', 'visible' => $navigationRoleNames->intersect(['administrador', 'reparacion'])->isNotEmpty()],
+        ['name' => 'Repuestos', 'icon' => 'bi-gear', 'route' => $navigationRoleNames->intersect(['administrador', 'repuestos'])->isNotEmpty() ? 'repuestos.index' : null, 'pattern' => 'repuestos.*', 'visible' => $navigationRoleNames->intersect(['administrador', 'repuestos'])->isNotEmpty()],
         ['name' => 'Compras', 'icon' => 'bi-cart3', 'route' => null, 'pattern' => null],
         ['name' => 'Facturación', 'icon' => 'bi-receipt', 'route' => null, 'pattern' => null],
     ];
@@ -16,6 +16,7 @@
     <a class="f1-top-brand" href="{{ route('dashboard') }}" title="Inicio"><span>AT</span><strong>AutoTech<small>Operaciones del taller</small></strong></a>
     <div class="f1-top-modules">
         @foreach (array_slice($navigationModules, 0, 7) as $module)
+            @continue(($module['visible'] ?? true) === false)
             @if ($module['route'] ?? null)
                 @php($modulePattern = $module['pattern'] ?? str($module['route'])->before('.').'.*')
                 <a class="{{ request()->routeIs($modulePattern) ? 'active' : '' }}" href="{{ route($module['route']) }}" @if(request()->routeIs($modulePattern)) aria-current="page" @endif><i class="bi {{ $module['icon'] }}" aria-hidden="true"></i><span>{{ $module['name'] }}</span></a>

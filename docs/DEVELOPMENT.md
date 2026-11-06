@@ -16,7 +16,7 @@ PHPUnit utiliza SQLite en memoria según `phpunit.xml`. Las pruebas no dependen 
 
 ### Demo de escritorio
 
-NativePHP empaqueta Laravel, PHP, Electron, los recursos compilados y una base SQLite. En el primer inicio migra la base ubicada en AppData y carga el usuario demo si todavía no existen usuarios.
+NativePHP empaqueta Laravel, PHP, Electron, los recursos compilados y una base SQLite. En el primer inicio migra la base ubicada en AppData y carga el usuario demo si todavía no existen usuarios. En instalaciones nuevas y actualizadas también carga el escenario operativo demostrativo de forma idempotente, sin duplicar ni sobrescribir cambios realizados por el evaluador.
 
 En Windows, el PHP empaquetado deshabilita OPcache mediante `NativeAppServiceProvider::phpIni()`. Esta configuración evita el fallo de los manejadores de opcode cuando ASLR impide utilizar OPcache y se limita al runtime de escritorio; no modifica el perfil web de desarrollo.
 
@@ -86,8 +86,8 @@ El repositorio utiliza GitHub Actions para que las verificaciones sean repetible
 Para generar una entrega versionada desde Git:
 
 ```powershell
-git tag v0.4.4
-git push origin v0.4.4
+git tag v0.4.5
+git push origin v0.4.5
 ```
 
 Antes de crear la etiqueta, la versión debe encontrarse integrada y verificada en `main`. El instalador no se agrega al repositorio.
@@ -98,7 +98,7 @@ GitHub for Atlassian proporciona la trazabilidad con Jira. Toda rama, commit y t
 
 - El instalador académico no está firmado y el código PHP no usa el servicio comercial de ofuscación de NativePHP.
 - La configuración Electron está publicada para poder generar NSIS en Windows sin requerir Modo desarrollador; `signAndEditExecutable` permanece desactivado hasta incorporar firma de código.
-- La aplicación PHP, Composer y el bundle web no presentan avisos conocidos. Durante la compilación 0.4.4, las dependencias internas del runtime NativePHP/Electron informaron 23 avisos de `npm audit` (18 moderados y 5 altos). El riesgo queda acotado en este MVP porque la demo solo carga la aplicación local y no utiliza `webview`, extensiones, USB/HID, iframes ni navegación externa. Antes de una distribución pública debe actualizarse NativePHP/Electron y repetirse la auditoría.
+- La aplicación PHP, Composer y el bundle web no presentan avisos conocidos. Durante la compilación 0.4.5, las dependencias internas del runtime NativePHP/Electron informaron 23 avisos de `npm audit` (18 moderados y 5 altos). El riesgo queda acotado en este MVP porque la demo solo carga la aplicación local y no utiliza `webview`, extensiones, USB/HID, iframes ni navegación externa. Antes de una distribución pública debe actualizarse NativePHP/Electron y repetirse la auditoría.
 - No ejecutar `npm audit fix --force` sobre `nativephp/electron`: implicaría saltos mayores no validados. Las actualizaciones compatibles ya se aplican en el lockfile publicado.
 
 ## Credencial demo

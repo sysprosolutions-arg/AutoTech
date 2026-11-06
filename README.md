@@ -6,7 +6,7 @@ Sistema de información para la gestión integral de clientes, proveedores, repu
 
 ## Estado del MVP
 
-El MVP incluye login y sesión, datos maestros, turnos, presupuestos, decisión del cliente, generación automática de órdenes de trabajo, asignación de empleados, reparaciones y gestión principal de repuestos. Compras y Facturación permanecen fuera del incremento funcional vigente.
+El MVP incluye login y sesión, datos maestros, turnos, presupuestos, decisión del cliente, generación automática de órdenes de trabajo, asignación de empleados, reparaciones y gestión principal de repuestos. También permite modificar turnos y reparaciones, emitir el listado operativo de turnos y generar reportes de reparaciones por tipo y de turnos por cliente durante el último año. Compras y Facturación permanecen fuera del incremento funcional vigente.
 
 ## Tecnologías
 
@@ -23,12 +23,14 @@ La justificación y las decisiones completas están en [docs/ARCHITECTURE.md](do
 
 ### Opción A: demo instalable
 
-La forma más rápida de evaluar el sistema es descargar `AutoTech-0.4.3-setup.exe` desde la [Release del MVP](https://github.com/sysprosolutions-arg/AutoTech/releases/tag/v0.4.3). Solo requiere Windows 10/11 x64: no hace falta instalar PHP, Composer, Node.js, MySQL, Visual Studio Code ni clonar el repositorio.
+La forma más rápida de evaluar el sistema es descargar `AutoTech-0.4.4-setup.exe` desde la [Release del MVP](https://github.com/sysprosolutions-arg/AutoTech/releases/tag/v0.4.4). Solo requiere Windows 10/11 x64: no hace falta instalar PHP, Composer, Node.js, MySQL, Visual Studio Code ni clonar el repositorio.
+
+En el primer inicio se carga información demostrativa editable —clientes, vehículos, repuestos, turnos, presupuestos, órdenes y reparaciones— para que el panel y los reportes puedan evaluarse inmediatamente.
 
 La compilación académica no está firmada comercialmente, por lo que Windows puede mostrar una advertencia de reputación. La suma SHA-256 esperada es:
 
 ```text
-838B29390F6F1C9EA157CCEDF5E1ABD5FF2F86CCD2B0693CA10241ECA0E5465C
+541DF86B70AEC3535037CE12DD68755C46D4A80FA41E87AB3CD4260788F46632
 ```
 
 ### Opción B: ejecutar el código fuente

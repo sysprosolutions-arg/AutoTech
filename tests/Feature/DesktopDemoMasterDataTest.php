@@ -34,7 +34,7 @@ class DesktopDemoMasterDataTest extends TestCase
 
     public function test_desktop_demo_uses_the_current_release_version(): void
     {
-        $this->assertSame('0.4.5', config('nativephp.version'));
+        $this->assertSame('0.4.6', config('nativephp.version'));
     }
 
     public function test_desktop_php_disables_opcache_for_windows_aslr_compatibility(): void

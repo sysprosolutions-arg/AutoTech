@@ -23,7 +23,7 @@ La justificación y las decisiones completas están en [docs/ARCHITECTURE.md](do
 
 ### Opción A: demo instalable
 
-La forma más rápida de evaluar el sistema es descargar `AutoTech-0.4.6-setup.exe` desde la [Release del MVP](https://github.com/sysprosolutions-arg/AutoTech/releases/tag/v0.4.6). Solo requiere Windows 10/11 x64: no hace falta instalar PHP, Composer, Node.js, MySQL, Visual Studio Code ni clonar el repositorio.
+La forma más rápida de evaluar el sistema es descargar `AutoTech-0.4.7-setup.exe` desde la [Release del MVP](https://github.com/sysprosolutions-arg/AutoTech/releases/tag/v0.4.7). Solo requiere Windows 10/11 x64: no hace falta instalar PHP, Composer, Node.js, MySQL, Visual Studio Code ni clonar el repositorio.
 
 En el primer inicio se carga información demostrativa editable —clientes, vehículos, repuestos, turnos, presupuestos, órdenes y reparaciones— para que el panel y los reportes puedan evaluarse inmediatamente.
 

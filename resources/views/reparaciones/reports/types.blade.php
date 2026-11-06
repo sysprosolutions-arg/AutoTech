@@ -44,7 +44,11 @@
         <p>Probá con otro rango de fechas para generar el reporte.</p>
     </section>
 @else
-    <article class="type-report" aria-labelledby="repair-type-report-title">
+    <article class="type-report report-document" aria-labelledby="repair-type-report-title">
+        <div class="report-print-brand" aria-hidden="true">
+            <span>AT</span>
+            <div><strong>AutoTech S.A.</strong><small>Reporte de gestión del taller</small></div>
+        </div>
         <header class="content-card daily-report-header mb-4">
             <div>
                 <div class="page-eyebrow">AutoTech S.A. · Distribución de trabajos</div>
@@ -78,6 +82,7 @@
             <h3 class="h5 fw-bold mt-1 mb-3" id="repair-type-table-title">Detalle del reporte</h3>
             <div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Tipo de reparación</th><th class="text-end">Cantidad</th><th class="text-end">Participación</th></tr></thead><tbody>@foreach ($tiposReparacion as $tipo)@php($percentage = ($tipo->reparaciones_count / $totalReparaciones) * 100)<tr><td><strong>{{ $tipo->nombre }}</strong></td><td class="text-end">{{ $tipo->reparaciones_count }}</td><td class="text-end">{{ number_format($percentage, 1, ',', '.') }}%</td></tr>@endforeach</tbody><tfoot><tr><th>Total</th><th class="text-end">{{ $totalReparaciones }}</th><th class="text-end">100%</th></tr></tfoot></table></div>
         </section>
+        <footer class="report-print-footer">AutoTech S.A. · Documento generado por el sistema de gestión</footer>
     </article>
 @endif
 @endsection

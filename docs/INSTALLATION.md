@@ -13,17 +13,17 @@ No se necesita PHP, Composer, Node.js, npm, MySQL, Visual Studio Code ni una cop
 
 ### Instalación
 
-1. Descargar `AutoTech-0.4.4-setup.exe` desde la [Release AutoTech 0.4.4](https://github.com/sysprosolutions-arg/AutoTech/releases/tag/v0.4.4).
-2. Verificar, si se desea, que el SHA-256 sea `541DF86B70AEC3535037CE12DD68755C46D4A80FA41E87AB3CD4260788F46632`.
+1. Descargar `AutoTech-0.4.5-setup.exe` desde la [Release AutoTech 0.4.5](https://github.com/sysprosolutions-arg/AutoTech/releases/tag/v0.4.5).
+2. Verificar, si se desea, que el SHA-256 sea `E03756C777926EBCA89112DA0029B2FBDB64B4B1E4F1A7DF9578E114107CC1C5`.
 3. Ejecutar el instalador.
 4. Si Windows muestra una advertencia de reputación, seleccionar **Más información** y **Ejecutar de todas formas**. El MVP académico no posee una firma comercial.
 5. Abrir AutoTech desde el menú Inicio.
 
 La aplicación instala su propio runtime y utiliza una base SQLite por usuario en `%APPDATA%\AutoTech\database\database.sqlite`.
 
-La versión 0.4.4 incorpora las funciones del Sprint 3: modificación de turnos y reparaciones, listado operativo de turnos y reportes por tipo de reparación y por cliente. Conserva la corrección del bloqueo indefinido en **Preparando el sistema del taller** que podía producirse en Windows por la combinación de OPcache y ASLR. Si existe una versión anterior, cerrar AutoTech e instalar 0.4.4 sobre ella. La aplicación de escritorio selecciona un puerto local disponible, por lo que puede ejecutarse al mismo tiempo que la versión web.
+La versión 0.4.5 incorpora las funciones del Sprint 3: modificación de turnos y reparaciones, listado operativo de turnos y reportes por tipo de reparación y por cliente. Además, garantiza que los datos demostrativos se incorporen también al actualizar una instalación existente, sin borrar ni sobrescribir los registros creados por el usuario. Conserva la corrección del bloqueo indefinido en **Preparando el sistema del taller** que podía producirse en Windows por la combinación de OPcache y ASLR. Si existe una versión anterior, cerrar AutoTech e instalar 0.4.5 sobre ella. La aplicación de escritorio selecciona un puerto local disponible, por lo que puede ejecutarse al mismo tiempo que la versión web.
 
-En una instalación nueva se generan datos demostrativos editables para visualizar desde el primer inicio el panel, los turnos, presupuestos, órdenes de trabajo, reparaciones y reportes.
+En una instalación nueva o al actualizar desde una versión anterior se generan, de forma idempotente, datos demostrativos editables para visualizar el panel, los turnos, presupuestos, órdenes de trabajo, reparaciones y reportes. La actualización conserva los datos que ya existan.
 
 ## 2. Código fuente en Windows
 

@@ -18,6 +18,7 @@ use Database\Seeders\RepuestosMasterDataSeeder;
 use Database\Seeders\TurnosMasterDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use ReflectionMethod;
 use Tests\TestCase;
 
 class DesktopDemoMasterDataTest extends TestCase
@@ -33,7 +34,7 @@ class DesktopDemoMasterDataTest extends TestCase
 
     public function test_desktop_demo_uses_the_current_release_version(): void
     {
-        $this->assertSame('0.4.4', config('nativephp.version'));
+        $this->assertSame('0.4.5', config('nativephp.version'));
     }
 
     public function test_desktop_php_disables_opcache_for_windows_aslr_compatibility(): void
@@ -44,11 +45,14 @@ class DesktopDemoMasterDataTest extends TestCase
         $this->assertSame('0', $phpIni['opcache.enable_cli']);
     }
 
-    public function test_master_data_is_added_to_an_existing_desktop_installation(): void
+    public function test_master_and_operational_data_are_added_to_an_existing_desktop_installation(): void
     {
+        CarbonImmutable::setTestNow('2026-11-05 14:00:00');
         User::factory()->create(['username' => 'admin']);
 
-        $this->seedDesktopMasterData();
+        $provider = app(NativeAppServiceProvider::class);
+        $seedDesktopDemo = new ReflectionMethod($provider, 'seedDesktopDemoIfNecessary');
+        $seedDesktopDemo->invoke($provider);
 
         $this->assertDatabaseCount('clientes', 8);
         $this->assertDatabaseCount('vehiculos', 12);
@@ -58,6 +62,24 @@ class DesktopDemoMasterDataTest extends TestCase
         $this->assertDatabaseCount('repuestos', 28);
         $this->assertDatabaseCount('tipos_reparacion', 4);
         $this->assertDatabaseCount('estados_reparacion', 3);
+        $this->assertDatabaseCount('turnos', 12);
+        $this->assertDatabaseCount('presupuestos', 8);
+        $this->assertDatabaseCount('ordenes_trabajo', 5);
+        $this->assertDatabaseCount('reparaciones', 5);
+
+        $appointment = Turno::query()->where('observaciones', 'like', '%AUTOTECH-DEMO:future-service%')->firstOrFail();
+        $appointment->update(['motivo' => 'Cambio realizado por el evaluador']);
+
+        $seedDesktopDemo->invoke($provider);
+
+        $this->assertDatabaseCount('turnos', 12);
+        $this->assertDatabaseCount('presupuestos', 8);
+        $this->assertDatabaseCount('ordenes_trabajo', 5);
+        $this->assertDatabaseCount('reparaciones', 5);
+        $this->assertDatabaseHas('turnos', [
+            'id' => $appointment->id,
+            'motivo' => 'Cambio realizado por el evaluador',
+        ]);
     }
 
     public function test_reseeding_does_not_overwrite_operational_changes_or_duplicate_data(): void

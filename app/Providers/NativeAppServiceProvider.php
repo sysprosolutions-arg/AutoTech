@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Database\Seeders\DemoOperationalDataSeeder;
 use Database\Seeders\PresupuestosMasterDataSeeder;
 use Database\Seeders\ReparacionesMasterDataSeeder;
 use Database\Seeders\RepuestosMasterDataSeeder;
@@ -20,7 +21,9 @@ class NativeAppServiceProvider implements ProvidesPhpIni
      */
     public function boot(): void
     {
-        $this->seedDesktopDemoIfNecessary();
+        app()->booted(function (): void {
+            $this->seedDesktopDemoIfNecessary();
+        });
 
         Window::open()
             ->title('AutoTech S.A.')
@@ -61,6 +64,7 @@ class NativeAppServiceProvider implements ProvidesPhpIni
             PresupuestosMasterDataSeeder::class,
             RepuestosMasterDataSeeder::class,
             ReparacionesMasterDataSeeder::class,
+            DemoOperationalDataSeeder::class,
         ] as $seeder) {
             Artisan::call('db:seed', [
                 '--class' => $seeder,

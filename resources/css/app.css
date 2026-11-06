@@ -1155,9 +1155,35 @@ textarea {
     margin: 0.25rem 0 0;
 }
 
+.report-print-brand,
+.report-print-footer {
+    display: none;
+}
+
 @media print {
+    @page {
+        margin: 12mm 12mm 15mm;
+        size: A4 portrait;
+    }
+
+    html,
+    body,
+    .app-body,
+    .app-main,
+    .app-content {
+        background: #fff !important;
+    }
+
+    body {
+        color: #17161c;
+        font-size: 9.5pt;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
     .app-sidebar,
     .app-topbar,
+    .f1-top-nav,
     .report-screen-actions {
         display: none !important;
     }
@@ -1170,9 +1196,167 @@ textarea {
         padding: 0;
     }
 
-    .content-card {
+    .report-document {
+        margin: 0;
+        width: 100%;
+    }
+
+    .report-print-brand {
+        align-items: center;
+        border-bottom: 2px solid #17161c;
+        display: flex;
+        gap: 3mm;
+        margin-bottom: 7mm;
+        padding-bottom: 4mm;
+    }
+
+    .report-print-brand > span {
+        align-items: center;
+        background: #e10600 !important;
+        border-radius: 2mm;
+        color: #fff !important;
+        display: flex;
+        font-size: 10pt;
+        font-weight: 900;
+        height: 10mm;
+        justify-content: center;
+        width: 10mm;
+    }
+
+    .report-print-brand strong,
+    .report-print-brand small {
+        display: block;
+    }
+
+    .report-print-brand strong {
+        font-size: 12pt;
+    }
+
+    .report-print-brand small {
+        color: #6f666a;
+        font-size: 7.5pt;
+    }
+
+    .report-document .content-card {
+        background: #fff !important;
+        border: 1px solid #d8cdd1;
+        border-radius: 2mm;
+        border-top: 3px solid #e10600;
         box-shadow: none;
+        margin-bottom: 7mm !important;
+        padding: 6mm;
+    }
+
+    .report-document > header.content-card {
+        break-after: avoid;
         break-inside: avoid;
+    }
+
+    .report-document .daily-report-header {
+        align-items: flex-start;
+    }
+
+    .report-document .page-eyebrow {
+        color: #e10600 !important;
+        font-size: 7.5pt;
+    }
+
+    .report-document h2 {
+        font-size: 17pt !important;
+    }
+
+    .report-document h3,
+    .report-document .h5 {
+        font-size: 12pt !important;
+    }
+
+    .report-document .report-metric strong {
+        color: #e10600 !important;
+        font-size: 14pt;
+    }
+
+    .report-document .table-responsive {
+        overflow: visible;
+    }
+
+    .report-document table {
+        font-size: 8.5pt;
+        width: 100%;
+    }
+
+    .report-document thead {
+        display: table-header-group;
+    }
+
+    .report-document tfoot {
+        display: table-footer-group;
+    }
+
+    .report-document tr,
+    .report-document .report-bar-row,
+    .report-document .report-state-list > div {
+        break-inside: avoid;
+    }
+
+    .report-document .table thead th {
+        background: #17161c !important;
+        border-color: #17161c !important;
+        color: #fff !important;
+        font-size: 7pt;
+        padding: 2.5mm 2mm;
+    }
+
+    .report-document .table tbody td,
+    .report-document .table tfoot th {
+        border-color: #ddd3d7 !important;
+        padding: 2.4mm 2mm;
+    }
+
+    .report-bar-track,
+    .monthly-bar-track {
+        background: #e8e2e4 !important;
+        border: 1px solid #d3c7cb;
+    }
+
+    .report-bar-track span,
+    .monthly-bar-track span {
+        background: #e10600 !important;
+    }
+
+    .monthly-chart {
+        gap: 2mm;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        min-width: 0;
+    }
+
+    .monthly-bar-track {
+        height: 38mm;
+    }
+
+    .monthly-column > small {
+        font-size: 6pt;
+    }
+
+    .report-group {
+        break-before: auto;
+    }
+
+    .report-group h2,
+    .report-group thead {
+        break-after: avoid;
+    }
+
+    .report-print-footer {
+        border-top: 1px solid #cfc4c8;
+        bottom: -10mm;
+        color: #81757a;
+        display: block;
+        font-size: 6.5pt;
+        left: 0;
+        padding-top: 2mm;
+        position: fixed;
+        right: 0;
+        text-align: center;
     }
 }
 

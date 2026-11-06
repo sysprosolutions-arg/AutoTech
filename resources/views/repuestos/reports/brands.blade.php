@@ -4,7 +4,7 @@
 @section('context', 'Informes de repuestos')
 
 @section('content')
-<section class="mb-4">
+<section class="mb-4 report-screen-actions">
     <div class="page-eyebrow">Catálogo e inventario · Reporte</div>
     <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3">
         <div>
@@ -45,8 +45,25 @@
         </button>
     </div>
 
+    <article class="report-document" aria-labelledby="brand-report-title">
+        <div class="report-print-brand" aria-hidden="true">
+            <span>AT</span>
+            <div><strong>AutoTech S.A.</strong><small>Reporte de gestión del taller</small></div>
+        </div>
+        <header class="content-card daily-report-header mb-4">
+            <div>
+                <div class="page-eyebrow">AutoTech S.A. · Catálogo e inventario</div>
+                <h2 class="h3 fw-bold mb-1" id="brand-report-title">Repuestos por marca</h2>
+                <p class="text-secondary mb-0">{{ $marca ?: 'Todas las marcas' }} · Reporte generado el {{ now()->format('d/m/Y H:i') }}.</p>
+            </div>
+            <div class="d-flex align-items-center gap-4 flex-wrap">
+                <div class="report-metric"><span>Marcas</span><strong>{{ $repuestosPorMarca->count() }}</strong></div>
+                <div class="report-metric"><span>Total repuestos</span><strong>{{ $repuestosPorMarca->flatten(1)->count() }}</strong></div>
+            </div>
+        </header>
+
     @foreach ($repuestosPorMarca as $nombreMarca => $repuestos)
-        <section class="content-card mb-4">
+        <section class="content-card mb-4 report-group">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="h4 fw-bold mb-0">{{ $nombreMarca }}</h2>
                 <span class="badge text-bg-secondary">{{ $repuestos->count() }} repuestos</span>
@@ -79,5 +96,7 @@
             </div>
         </section>
     @endforeach
+        <footer class="report-print-footer">AutoTech S.A. · Documento generado por el sistema de gestión</footer>
+    </article>
 @endif
 @endsection

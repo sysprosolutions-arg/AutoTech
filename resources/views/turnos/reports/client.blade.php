@@ -44,7 +44,11 @@
         <p>No existen registros para {{ $cliente->nombre }} {{ $cliente->apellido }} dentro del período consultado.</p>
     </section>
 @else
-    <article aria-labelledby="client-appointments-report-title">
+    <article class="report-document" aria-labelledby="client-appointments-report-title">
+        <div class="report-print-brand" aria-hidden="true">
+            <span>AT</span>
+            <div><strong>AutoTech S.A.</strong><small>Reporte de gestión del taller</small></div>
+        </div>
         <header class="content-card daily-report-header mb-4">
             <div>
                 <div class="page-eyebrow">AutoTech S.A. · Historial del cliente</div>
@@ -93,6 +97,7 @@
             <h3 class="h5 fw-bold mt-1 mb-3" id="client-appointments-table-title">Turnos comprendidos en el período</h3>
             <div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Fecha y hora</th><th>Vehículo</th><th>Motivo</th><th>Estado</th></tr></thead><tbody>@foreach ($turnos as $turno)<tr><td><strong>{{ $turno->fecha->format('d/m/Y') }}</strong><small class="d-block text-secondary">{{ substr((string) $turno->hora, 0, 5) }} h</small></td><td><strong>{{ $turno->vehiculo->patente }}</strong><small class="d-block text-secondary">{{ $turno->vehiculo->marca }} {{ $turno->vehiculo->modelo }}</small></td><td>{{ $turno->motivo }}</td><td><span class="state-badge state-{{ $turno->estado->codigo }}">{{ $turno->estado->nombre }}</span></td></tr>@endforeach</tbody></table></div>
         </section>
+        <footer class="report-print-footer">AutoTech S.A. · Documento generado por el sistema de gestión</footer>
     </article>
 @endif
 @endsection

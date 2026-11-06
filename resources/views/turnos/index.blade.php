@@ -111,7 +111,7 @@
         </div>
 
         @if ($turnos->hasPages())
-            <div class="mt-4">{{ $turnos->links('pagination::bootstrap-5') }}</div>
+            <div class="mt-4">{{ $turnos->links() }}</div>
         @endif
     @endif
 </section>

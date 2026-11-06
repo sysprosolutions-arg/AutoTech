@@ -75,6 +75,33 @@ class RepuestoConsultationTest extends TestCase
             ->assertSee('12');
     }
 
+    public function test_spare_part_pagination_uses_bootstrap_and_spanish_labels(): void
+    {
+        foreach (range(2, 11) as $index) {
+            Repuesto::query()->create([
+                'proveedor_id' => $this->proveedor->id,
+                'codigo' => sprintf('REP-FIL-%03d', $index),
+                'nombre' => "Repuesto de prueba {$index}",
+                'marca' => 'Toyota',
+                'original' => true,
+                'precio_venta' => '1000.00',
+                'stock' => 1,
+                'activo' => true,
+            ]);
+        }
+
+        $this->actingAs($this->responsableRepuestos)
+            ->get('/repuestos')
+            ->assertOk()
+            ->assertSee('Mostrando')
+            ->assertSee('Anterior')
+            ->assertSee('Siguiente')
+            ->assertSee('class="pagination mb-0"', false)
+            ->assertDontSee('pagination.previous')
+            ->assertDontSee('pagination.next')
+            ->assertDontSee('<svg', false);
+    }
+
     public function test_spare_parts_can_be_searched_by_available_identification_data(): void
     {
         foreach ([(string) $this->repuesto->id, 'REP-FIL-001', 'Filtro de aceite', 'Toyota', 'Autopartes del Plata'] as $search) {

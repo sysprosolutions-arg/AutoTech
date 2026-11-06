@@ -98,7 +98,7 @@
         </div>
 
         @if ($reparaciones->hasPages())
-            <div class="mt-4">{{ $reparaciones->links('pagination::bootstrap-5') }}</div>
+            <div class="mt-4">{{ $reparaciones->links() }}</div>
         @endif
     @endif
 </section>

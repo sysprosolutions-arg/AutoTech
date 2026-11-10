@@ -102,6 +102,11 @@ class ReparacionController extends Controller
 
         return view('reparaciones.form', [
             'ordenTrabajo' => $ordenTrabajo,
+            'repuestosDisponibles' => Repuesto::query()
+                ->where('activo', true)
+                ->orderBy('nombre')
+                ->orderBy('marca')
+                ->get(),
             'tiposReparacion' => TipoReparacion::query()->where('activo', true)->orderBy('nombre')->get(),
         ]);
     }
@@ -154,23 +159,18 @@ class ReparacionController extends Controller
                     'descripcion' => $detalle->descripcion,
                     'cantidad' => $detalle->cantidad,
                 ]);
-            $repuestosOrdenados = $ordenTrabajo->detalles
-                ->whereNotNull('repuesto_id')
-                ->keyBy('id');
-
             foreach ($data['repuestos'] ?? [] as $item) {
-                $detalleOrden = $repuestosOrdenados->get((int) $item['detalle_id']);
+                $repuesto = Repuesto::query()->lockForUpdate()->find((int) $item['repuesto_id']);
 
-                if (! $detalleOrden instanceof DetalleOrdenTrabajo) {
+                if (! $repuesto instanceof Repuesto || ! $repuesto->activo) {
                     throw ValidationException::withMessages([
-                        'repuestos' => 'Uno de los repuestos no pertenece a la Orden de Trabajo.',
+                        'repuestos' => 'Uno de los repuestos seleccionados no está disponible.',
                     ]);
                 }
 
-                $repuesto = Repuesto::query()->lockForUpdate()->findOrFail($detalleOrden->repuesto_id);
                 $cantidad = (int) $item['cantidad'];
 
-                if ($cantidad > $detalleOrden->cantidad || $cantidad > $repuesto->stock) {
+                if ($cantidad > $repuesto->stock) {
                     throw ValidationException::withMessages([
                         'repuestos' => "No hay disponibilidad suficiente de {$repuesto->nombre}.",
                     ]);
@@ -181,7 +181,7 @@ class ReparacionController extends Controller
                     'tipo' => 'repuesto',
                     'tipo_servicio_id' => null,
                     'repuesto_id' => $repuesto->id,
-                    'descripcion' => $detalleOrden->descripcion,
+                    'descripcion' => $repuesto->nombre,
                     'cantidad' => $cantidad,
                 ]);
             }
@@ -239,6 +239,11 @@ class ReparacionController extends Controller
                 ->with('error', 'La reparación no puede modificarse porque está cancelada.');
         }
 
+        $currentPartIds = $reparacion->detalles
+            ->where('tipo', 'repuesto')
+            ->pluck('repuesto_id')
+            ->filter();
+
         return view('reparaciones.edit', [
             'empleados' => Empleado::query()
                 ->whereHas('estado', fn ($query) => $query->where('codigo', 'activo'))
@@ -247,6 +252,17 @@ class ReparacionController extends Controller
                 ->orderBy('nombre')
                 ->get(),
             'reparacion' => $reparacion,
+            'repuestosDisponibles' => Repuesto::query()
+                ->where(function ($query) use ($currentPartIds): void {
+                    $query->where('activo', true)
+                        ->when(
+                            $currentPartIds->isNotEmpty(),
+                            fn ($query) => $query->orWhereIn('id', $currentPartIds),
+                        );
+                })
+                ->orderBy('nombre')
+                ->orderBy('marca')
+                ->get(),
             'tiposReparacion' => TipoReparacion::query()->where('activo', true)->orderBy('nombre')->get(),
         ]);
     }
@@ -274,6 +290,9 @@ class ReparacionController extends Controller
                     ->increment('stock', $oldPartDetail->cantidad);
             }
 
+            $previousPartIds = $reparacion->detalles
+                ->where('tipo', 'repuesto')
+                ->pluck('repuesto_id');
             $reparacion->detalles()->delete();
             $workOrderDetails = $reparacion->ordenTrabajo->detalles->keyBy('id');
             $newDetails = collect();
@@ -297,18 +316,17 @@ class ReparacionController extends Controller
             }
 
             foreach ($data['repuestos'] ?? [] as $item) {
-                $workOrderDetail = $workOrderDetails->get((int) $item['detalle_id']);
+                $part = Repuesto::query()->lockForUpdate()->find((int) $item['repuesto_id']);
 
-                if (! $workOrderDetail instanceof DetalleOrdenTrabajo || $workOrderDetail->repuesto_id === null) {
+                if (! $part instanceof Repuesto || (! $part->activo && ! $previousPartIds->contains($part->id))) {
                     throw ValidationException::withMessages([
-                        'repuestos' => 'Uno de los repuestos no pertenece a la Orden de Trabajo.',
+                        'repuestos' => 'Uno de los repuestos seleccionados no está disponible.',
                     ]);
                 }
 
-                $part = Repuesto::query()->lockForUpdate()->findOrFail($workOrderDetail->repuesto_id);
                 $quantity = (int) $item['cantidad'];
 
-                if ($quantity > $workOrderDetail->cantidad || $quantity > $part->stock) {
+                if ($quantity > $part->stock) {
                     throw ValidationException::withMessages([
                         'repuestos' => "No hay disponibilidad suficiente de {$part->nombre}.",
                     ]);
@@ -319,7 +337,7 @@ class ReparacionController extends Controller
                     'tipo' => 'repuesto',
                     'tipo_servicio_id' => null,
                     'repuesto_id' => $part->id,
-                    'descripcion' => $workOrderDetail->descripcion,
+                    'descripcion' => $part->nombre,
                     'cantidad' => $quantity,
                 ]);
             }

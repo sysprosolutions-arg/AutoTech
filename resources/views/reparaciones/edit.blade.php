@@ -8,7 +8,8 @@
 @php($currentParts = $reparacion->detalles->where('tipo', 'repuesto')->keyBy('repuesto_id'))
 @php($currentServices = $reparacion->detalles->where('tipo', 'servicio')->pluck('tipo_servicio_id')->all())
 @php($selectedServices = collect(old('servicios', $workOrder->detalles->whereIn('tipo_servicio_id', $currentServices)->pluck('id')->all())))
-@php($oldParts = collect(old('repuestos', []))->keyBy('detalle_id'))
+@php($oldParts = collect(old('repuestos', []))->keyBy('repuesto_id'))
+@php($authorizedPartQuantities = $workOrder->detalles->whereNotNull('repuesto_id')->pluck('cantidad', 'repuesto_id'))
 
 <section class="mb-4">
     <div class="page-eyebrow">{{ $reparacion->numero }} · Modificación</div>
@@ -87,20 +88,20 @@
             </section>
 
             <section class="content-card" aria-labelledby="modified-parts-title">
-                <div class="form-section-heading"><span class="form-section-icon"><i class="bi bi-gear" aria-hidden="true"></i></span><div><h2 id="modified-parts-title">Repuestos utilizados</h2><p>Las cantidades modificadas actualizan el stock de forma transaccional.</p></div></div>
-                @php($partDetails = $workOrder->detalles->whereNotNull('repuesto_id'))
-                @if ($partDetails->isEmpty())
-                    <p class="text-secondary mb-0">La OT no incluye repuestos.</p>
+                <div class="form-section-heading"><span class="form-section-icon"><i class="bi bi-gear" aria-hidden="true"></i></span><div><h2 id="modified-parts-title">Repuestos utilizados</h2><p>Podés registrar repuestos adicionales. Las cantidades modificadas actualizan el stock de forma transaccional.</p></div></div>
+                @if ($repuestosDisponibles->isEmpty())
+                    <p class="text-secondary mb-0">No hay repuestos disponibles.</p>
                 @else
                     <div class="catalog-list">
-                        @foreach ($partDetails as $detail)
-                            @php($currentDetail = $currentParts->get($detail->repuesto_id))
-                            @php($selected = old('repuestos') !== null ? $oldParts->has($detail->id) : $currentDetail !== null)
-                            @php($oldItem = $oldParts->get($detail->id, []))
-                            @php($available = $detail->repuesto->stock + ($currentDetail?->cantidad ?? 0))
+                        @foreach ($repuestosDisponibles as $repuesto)
+                            @php($currentDetail = $currentParts->get($repuesto->id))
+                            @php($selected = old('repuestos') !== null ? $oldParts->has($repuesto->id) : $currentDetail !== null)
+                            @php($oldItem = $oldParts->get($repuesto->id, []))
+                            @php($available = $repuesto->stock + ($currentDetail?->cantidad ?? 0))
+                            @php($authorizedQuantity = $authorizedPartQuantities->get($repuesto->id))
                             <article class="catalog-item" data-repair-part>
-                                <div class="form-check catalog-check"><input class="form-check-input" id="repair-part-{{ $detail->id }}" name="repuestos[{{ $detail->id }}][detalle_id]" type="checkbox" value="{{ $detail->id }}" data-repair-part-toggle @checked($selected) @disabled($available === 0)><label class="form-check-label" for="repair-part-{{ $detail->id }}"><strong>{{ $detail->descripcion }}</strong><span>Autorizado: {{ $detail->cantidad }} · Disponible para esta reparación: {{ $available }}</span></label></div>
-                                <div class="catalog-price"><label class="small text-secondary" for="repair-part-quantity-{{ $detail->id }}">Cantidad usada</label><input class="form-control form-control-sm" id="repair-part-quantity-{{ $detail->id }}" name="repuestos[{{ $detail->id }}][cantidad]" type="number" min="1" max="{{ min($detail->cantidad, $available) }}" value="{{ $oldItem['cantidad'] ?? $currentDetail?->cantidad ?? 1 }}" data-repair-part-quantity @disabled(! $selected)></div>
+                                <div class="form-check catalog-check"><input class="form-check-input" id="repair-part-{{ $repuesto->id }}" name="repuestos[{{ $repuesto->id }}][repuesto_id]" type="checkbox" value="{{ $repuesto->id }}" data-repair-part-toggle @checked($selected) @disabled($available === 0)><label class="form-check-label" for="repair-part-{{ $repuesto->id }}"><strong>{{ $repuesto->nombre }}</strong><span>{{ $repuesto->marca }} · {{ $authorizedQuantity ? "Incluido en presupuesto: {$authorizedQuantity}" : 'Adicional no presupuestado' }} · Disponible para esta reparación: {{ $available }}</span></label></div>
+                                <div class="catalog-price"><label class="small text-secondary" for="repair-part-quantity-{{ $repuesto->id }}">Cantidad usada</label><input class="form-control form-control-sm" id="repair-part-quantity-{{ $repuesto->id }}" name="repuestos[{{ $repuesto->id }}][cantidad]" type="number" min="1" max="{{ $available }}" value="{{ $oldItem['cantidad'] ?? $currentDetail?->cantidad ?? 1 }}" data-repair-part-quantity @disabled(! $selected)></div>
                             </article>
                         @endforeach
                     </div>

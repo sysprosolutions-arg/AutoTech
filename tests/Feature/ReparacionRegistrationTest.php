@@ -51,11 +51,11 @@ class ReparacionRegistrationTest extends TestCase
 
     private Repuesto $repuesto;
 
+    private Repuesto $repuestoAdicional;
+
     private Empleado $empleadoAlternativo;
 
     private int $detalleServicioId;
-
-    private int $detalleRepuestoId;
 
     protected function setUp(): void
     {
@@ -127,6 +127,15 @@ class ReparacionRegistrationTest extends TestCase
             'stock' => 10,
             'activo' => true,
         ]);
+        $this->repuestoAdicional = Repuesto::query()->create([
+            'codigo' => 'REP-LIQ-001',
+            'nombre' => 'Líquido de frenos',
+            'marca' => 'Bosch',
+            'original' => false,
+            'precio_venta' => '9200.00',
+            'stock' => 7,
+            'activo' => true,
+        ]);
 
         $this->presupuesto = Presupuesto::query()->create([
             'numero' => 'PRE-000001',
@@ -135,6 +144,24 @@ class ReparacionRegistrationTest extends TestCase
             'fecha_emision' => now()->toDateString(),
             'valido_hasta' => now()->addDays(15)->toDateString(),
             'total' => '103500.00',
+        ]);
+        $this->presupuesto->detalles()->createMany([
+            [
+                'tipo' => 'servicio',
+                'tipo_servicio_id' => $servicio->id,
+                'descripcion' => $servicio->nombre,
+                'cantidad' => 1,
+                'precio_unitario' => '85000.00',
+                'subtotal' => '85000.00',
+            ],
+            [
+                'tipo' => 'repuesto',
+                'repuesto_id' => $this->repuesto->id,
+                'descripcion' => $this->repuesto->nombre,
+                'cantidad' => 1,
+                'precio_unitario' => '18500.00',
+                'subtotal' => '18500.00',
+            ],
         ]);
         $this->aprobacion = AprobacionPresupuesto::query()->create([
             'presupuesto_id' => $this->presupuesto->id,
@@ -164,13 +191,12 @@ class ReparacionRegistrationTest extends TestCase
             'precio_referencia' => '85000.00',
         ]);
         $this->detalleServicioId = $detalleServicio->id;
-        $detalleRepuesto = $this->ordenTrabajo->detalles()->create([
+        $this->ordenTrabajo->detalles()->create([
             'repuesto_id' => $this->repuesto->id,
             'descripcion' => $this->repuesto->nombre,
             'cantidad' => 2,
             'precio_referencia' => '18500.00',
         ]);
-        $this->detalleRepuestoId = $detalleRepuesto->id;
 
         $this->tipoReparacion = TipoReparacion::query()->create([
             'codigo' => 'preventiva',
@@ -209,6 +235,8 @@ class ReparacionRegistrationTest extends TestCase
             ->assertOk()
             ->assertSee('Service programado')
             ->assertSee('Filtro de aceite')
+            ->assertSee('Líquido de frenos')
+            ->assertSee('Adicional no presupuestado')
             ->assertSee('Mantenimiento preventivo')
             ->assertSee('min="0.25"', false)
             ->assertSee('step="0.25"', false);
@@ -297,6 +325,49 @@ class ReparacionRegistrationTest extends TestCase
         ]);
     }
 
+    public function test_repair_accepts_an_active_part_not_in_the_approved_budget_without_changing_it(): void
+    {
+        $budgetTotal = $this->presupuesto->total;
+        $budgetDetails = $this->presupuesto->detalles()
+            ->orderBy('id')
+            ->get(['tipo', 'tipo_servicio_id', 'repuesto_id', 'descripcion', 'cantidad', 'precio_unitario', 'subtotal'])
+            ->toArray();
+        $workOrderDetailCount = $this->ordenTrabajo->detalles()->count();
+        $payload = $this->validPayload();
+        $payload['repuestos'][] = [
+            'repuesto_id' => $this->repuestoAdicional->id,
+            'cantidad' => 1,
+        ];
+
+        $this->actingAs($this->responsableReparacion)
+            ->post('/reparaciones', $payload)
+            ->assertRedirect();
+
+        $repair = Reparacion::query()->firstOrFail();
+
+        $this->assertDatabaseHas('detalle_reparaciones', [
+            'reparacion_id' => $repair->id,
+            'tipo' => 'repuesto',
+            'repuesto_id' => $this->repuestoAdicional->id,
+            'descripcion' => 'Líquido de frenos',
+            'cantidad' => 1,
+        ]);
+        $this->assertSame(6, $this->repuestoAdicional->fresh()->stock);
+        $this->assertSame($budgetTotal, $this->presupuesto->fresh()->total);
+        $this->assertSame(
+            $budgetDetails,
+            $this->presupuesto->detalles()
+                ->orderBy('id')
+                ->get(['tipo', 'tipo_servicio_id', 'repuesto_id', 'descripcion', 'cantidad', 'precio_unitario', 'subtotal'])
+                ->toArray(),
+        );
+        $this->assertSame($workOrderDetailCount, $this->ordenTrabajo->detalles()->count());
+        $this->assertDatabaseMissing('detalle_ordenes_trabajo', [
+            'orden_trabajo_id' => $this->ordenTrabajo->id,
+            'repuesto_id' => $this->repuestoAdicional->id,
+        ]);
+    }
+
     public function test_responsible_user_can_open_the_repair_edit_form(): void
     {
         $this->actingAs($this->responsableReparacion)
@@ -309,7 +380,9 @@ class ReparacionRegistrationTest extends TestCase
             ->assertSee('Modificar reparación')
             ->assertSee('Fernández, Lucía')
             ->assertSee('Service programado')
-            ->assertSee('Filtro de aceite');
+            ->assertSee('Filtro de aceite')
+            ->assertSee('Líquido de frenos')
+            ->assertSee('Adicional no presupuestado');
     }
 
     public function test_repair_can_be_modified_with_services_mechanic_parts_and_localized_time(): void
@@ -345,6 +418,39 @@ class ReparacionRegistrationTest extends TestCase
         $this->assertSame(9, $this->repuesto->fresh()->stock);
     }
 
+    public function test_an_additional_part_can_be_added_when_modifying_a_repair(): void
+    {
+        $this->actingAs($this->responsableReparacion)
+            ->post('/reparaciones', $this->validPayload());
+        $repair = Reparacion::query()->firstOrFail();
+        $payload = $this->validUpdatePayload();
+        $payload['repuestos'][] = [
+            'repuesto_id' => $this->repuestoAdicional->id,
+            'cantidad' => 2,
+        ];
+
+        $this->actingAs($this->responsableReparacion)
+            ->put(route('reparaciones.update', $repair), $payload)
+            ->assertRedirect(route('reparaciones.show', $repair))
+            ->assertSessionHas('status');
+
+        $this->assertDatabaseHas('detalle_reparaciones', [
+            'reparacion_id' => $repair->id,
+            'repuesto_id' => $this->repuestoAdicional->id,
+            'descripcion' => 'Líquido de frenos',
+            'cantidad' => 2,
+        ]);
+        $this->assertSame(5, $this->repuestoAdicional->fresh()->stock);
+        $this->assertDatabaseMissing('detalle_presupuestos', [
+            'presupuesto_id' => $this->presupuesto->id,
+            'repuesto_id' => $this->repuestoAdicional->id,
+        ]);
+        $this->assertDatabaseMissing('detalle_ordenes_trabajo', [
+            'orden_trabajo_id' => $this->ordenTrabajo->id,
+            'repuesto_id' => $this->repuestoAdicional->id,
+        ]);
+    }
+
     public function test_invalid_repair_modification_preserves_data_details_and_stock(): void
     {
         $this->actingAs($this->responsableReparacion)
@@ -352,7 +458,7 @@ class ReparacionRegistrationTest extends TestCase
         $repair = Reparacion::query()->firstOrFail();
         $payload = $this->validUpdatePayload();
         $payload['trabajos_realizados'] = '';
-        $payload['repuestos'][0]['cantidad'] = 3;
+        $payload['repuestos'][0]['cantidad'] = 11;
 
         $this->actingAs($this->responsableReparacion)
             ->from(route('reparaciones.edit', $repair))
@@ -398,18 +504,36 @@ class ReparacionRegistrationTest extends TestCase
         $this->assertSame(8, $this->repuesto->fresh()->stock);
     }
 
-    public function test_a_part_outside_the_work_order_cannot_be_registered(): void
+    public function test_a_nonexistent_part_cannot_be_registered(): void
     {
         $payload = $this->validPayload();
-        $payload['repuestos'][0]['detalle_id'] = 999999;
+        $payload['repuestos'][0]['repuesto_id'] = 999999;
 
         $this->actingAs($this->responsableReparacion)
             ->from("/reparaciones/crear/{$this->ordenTrabajo->id}")
             ->post('/reparaciones', $payload)
-            ->assertSessionHasErrors('repuestos.0.detalle_id');
+            ->assertSessionHasErrors('repuestos.0.repuesto_id');
 
         $this->assertDatabaseCount('reparaciones', 0);
         $this->assertSame(10, $this->repuesto->fresh()->stock);
+    }
+
+    public function test_an_inactive_part_cannot_be_added_to_a_repair(): void
+    {
+        $this->repuestoAdicional->update(['activo' => false]);
+        $payload = $this->validPayload();
+        $payload['repuestos'][0] = [
+            'repuesto_id' => $this->repuestoAdicional->id,
+            'cantidad' => 1,
+        ];
+
+        $this->actingAs($this->responsableReparacion)
+            ->from("/reparaciones/crear/{$this->ordenTrabajo->id}")
+            ->post('/reparaciones', $payload)
+            ->assertSessionHasErrors('repuestos.0.repuesto_id');
+
+        $this->assertDatabaseCount('reparaciones', 0);
+        $this->assertSame(7, $this->repuestoAdicional->fresh()->stock);
     }
 
     public function test_a_work_order_cannot_create_duplicate_repairs_or_consume_stock_twice(): void
@@ -463,7 +587,7 @@ class ReparacionRegistrationTest extends TestCase
             'trabajos_realizados' => 'Se realizó el service programado y el control general de la unidad.',
             'incidencias' => null,
             'repuestos' => [
-                ['detalle_id' => $this->detalleRepuestoId, 'cantidad' => 2],
+                ['repuesto_id' => $this->repuesto->id, 'cantidad' => 2],
             ],
         ];
     }
@@ -479,7 +603,7 @@ class ReparacionRegistrationTest extends TestCase
             'incidencias' => 'Sin novedades luego del control final.',
             'servicios' => [$this->detalleServicioId],
             'repuestos' => [
-                ['detalle_id' => $this->detalleRepuestoId, 'cantidad' => 1],
+                ['repuesto_id' => $this->repuesto->id, 'cantidad' => 1],
             ],
         ];
     }

@@ -13,15 +13,15 @@ No se necesita PHP, Composer, Node.js, npm, MySQL, Visual Studio Code ni una cop
 
 ### Instalación
 
-1. Descargar `AutoTech-0.4.7-setup.exe` desde la [Release AutoTech 0.4.7](https://github.com/sysprosolutions-arg/AutoTech/releases/tag/v0.4.7).
-2. Verificar, si se desea, que el SHA-256 sea `7473E6CD9D4579BC92BBF8BDF67734D6CF81E2721F65B075474D7062821A8402`.
+1. Descargar `AutoTech-0.4.8-setup.exe` desde la [Release AutoTech 0.4.8](https://github.com/sysprosolutions-arg/AutoTech/releases/tag/v0.4.8).
+2. Verificar, si se desea, que el SHA-256 sea `93FD86016E025C2F8292158AA27D78285CD42D19FF9DCC23BF0893F780D76359`.
 3. Ejecutar el instalador.
 4. Si Windows muestra una advertencia de reputación, seleccionar **Más información** y **Ejecutar de todas formas**. El MVP académico no posee una firma comercial.
 5. Abrir AutoTech desde el menú Inicio.
 
 La aplicación instala su propio runtime y utiliza una base SQLite por usuario en `%APPDATA%\AutoTech\database\database.sqlite`.
 
-La versión 0.4.7 mejora la impresión de los reportes por cliente, tipo de reparación, marca y proveedor. Los PDF utilizan una presentación A4 independiente, ocultan la navegación y los controles del sistema, conservan los gráficos y colores, repiten los encabezados de las tablas y agregan identificación, métricas y pie documental de AutoTech. Mantiene las funciones del Sprint 3, la paginación corregida, la carga idempotente de datos demostrativos y la corrección del bloqueo en **Preparando el sistema del taller**. Si existe una versión anterior, cerrar AutoTech e instalar 0.4.7 sobre ella. La aplicación de escritorio selecciona un puerto local disponible, por lo que puede ejecutarse al mismo tiempo que la versión web.
+La versión 0.4.8 permite registrar y modificar una reparación utilizando cualquier repuesto activo con stock suficiente, incluso cuando no estaba incluido en el presupuesto aprobado. El consumo descuenta el stock real y se registra en la reparación, mientras que el presupuesto y la Orden de Trabajo conservan sin cambios su información histórica. Mantiene las mejoras de impresión A4, las funciones del Sprint 3, la paginación corregida, la carga idempotente de datos demostrativos y la corrección del bloqueo en **Preparando el sistema del taller**. Si existe una versión anterior, cerrar AutoTech e instalar 0.4.8 sobre ella. La aplicación de escritorio selecciona un puerto local disponible, por lo que puede ejecutarse al mismo tiempo que la versión web.
 
 En una instalación nueva o al actualizar desde una versión anterior se generan, de forma idempotente, datos demostrativos editables para visualizar el panel, los turnos, presupuestos, órdenes de trabajo, reparaciones y reportes. La actualización conserva los datos que ya existan.
 

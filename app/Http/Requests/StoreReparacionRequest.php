@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Models\DetalleOrdenTrabajo;
+use App\Models\Repuesto;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -26,16 +25,12 @@ class StoreReparacionRequest extends FormRequest
             'trabajos_realizados' => ['required', 'string', 'max:2000'],
             'incidencias' => ['nullable', 'string', 'max:2000'],
             'repuestos' => ['nullable', 'array'],
-            'repuestos.*' => ['required', 'array:detalle_id,cantidad'],
-            'repuestos.*.detalle_id' => [
+            'repuestos.*' => ['required', 'array:repuesto_id,cantidad'],
+            'repuestos.*.repuesto_id' => [
                 'required',
                 'integer',
                 'distinct:strict',
-                Rule::exists('detalle_ordenes_trabajo', 'id')->where(
-                    fn (Builder $query): Builder => $query
-                        ->where('orden_trabajo_id', $this->integer('orden_trabajo_id'))
-                        ->whereNotNull('repuesto_id'),
-                ),
+                Rule::exists('repuestos', 'id'),
             ],
             'repuestos.*.cantidad' => ['required', 'integer', 'min:1', 'max:99'],
         ];
@@ -63,9 +58,8 @@ class StoreReparacionRequest extends FormRequest
                     return;
                 }
 
-                $detalles = DetalleOrdenTrabajo::query()
-                    ->with('repuesto')
-                    ->whereIn('id', collect($input)->pluck('detalle_id')->filter())
+                $repuestos = Repuesto::query()
+                    ->whereIn('id', collect($input)->pluck('repuesto_id')->filter())
                     ->get()
                     ->keyBy('id');
 
@@ -74,24 +68,24 @@ class StoreReparacionRequest extends FormRequest
                         continue;
                     }
 
-                    $detalle = $detalles->get((int) ($item['detalle_id'] ?? 0));
+                    $repuesto = $repuestos->get((int) ($item['repuesto_id'] ?? 0));
                     $cantidad = (int) ($item['cantidad'] ?? 0);
 
-                    if (! $detalle instanceof DetalleOrdenTrabajo || ! $detalle->repuesto) {
+                    if (! $repuesto instanceof Repuesto) {
                         continue;
                     }
 
-                    if ($cantidad > $detalle->cantidad) {
+                    if (! $repuesto->activo) {
                         $validator->errors()->add(
-                            "repuestos.{$index}.cantidad",
-                            "La cantidad utilizada de {$detalle->descripcion} supera la autorizada en la OT ({$detalle->cantidad}).",
+                            "repuestos.{$index}.repuesto_id",
+                            "El repuesto {$repuesto->nombre} no se encuentra activo.",
                         );
                     }
 
-                    if ($cantidad > $detalle->repuesto->stock) {
+                    if ($cantidad > $repuesto->stock) {
                         $validator->errors()->add(
                             "repuestos.{$index}.cantidad",
-                            "La cantidad utilizada de {$detalle->descripcion} supera el stock disponible ({$detalle->repuesto->stock}).",
+                            "La cantidad utilizada de {$repuesto->nombre} supera el stock disponible ({$repuesto->stock}).",
                         );
                     }
                 }
@@ -115,7 +109,7 @@ class StoreReparacionRequest extends FormRequest
             'trabajos_realizados.required' => 'Describí los trabajos realizados.',
             'trabajos_realizados.max' => 'La descripción no puede superar los 2000 caracteres.',
             'incidencias.max' => 'Las incidencias no pueden superar los 2000 caracteres.',
-            'repuestos.*.detalle_id.exists' => 'Uno de los repuestos no pertenece a la Orden de Trabajo.',
+            'repuestos.*.repuesto_id.exists' => 'Uno de los repuestos seleccionados no existe.',
             'repuestos.*.cantidad.min' => 'La cantidad utilizada debe ser mayor a cero.',
         ];
     }

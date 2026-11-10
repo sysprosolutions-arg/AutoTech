@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\DetalleOrdenTrabajo;
 use App\Models\Empleado;
 use App\Models\Reparacion;
+use App\Models\Repuesto;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
@@ -42,16 +43,12 @@ class UpdateReparacionRequest extends FormRequest
                 ),
             ],
             'repuestos' => ['nullable', 'array'],
-            'repuestos.*' => ['required', 'array:detalle_id,cantidad'],
-            'repuestos.*.detalle_id' => [
+            'repuestos.*' => ['required', 'array:repuesto_id,cantidad'],
+            'repuestos.*.repuesto_id' => [
                 'required',
                 'integer',
                 'distinct:strict',
-                Rule::exists('detalle_ordenes_trabajo', 'id')->where(
-                    fn (Builder $query): Builder => $query
-                        ->where('orden_trabajo_id', $workOrderId)
-                        ->whereNotNull('repuesto_id'),
-                ),
+                Rule::exists('repuestos', 'id'),
             ],
             'repuestos.*.cantidad' => ['required', 'integer', 'min:1', 'max:99'],
         ];
@@ -111,9 +108,8 @@ class UpdateReparacionRequest extends FormRequest
                 $currentQuantities = $repair->detalles()
                     ->where('tipo', 'repuesto')
                     ->pluck('cantidad', 'repuesto_id');
-                $partDetails = DetalleOrdenTrabajo::query()
-                    ->with('repuesto')
-                    ->whereIn('id', collect($inputParts)->pluck('detalle_id')->filter())
+                $parts = Repuesto::query()
+                    ->whereIn('id', collect($inputParts)->pluck('repuesto_id')->filter())
                     ->get()
                     ->keyBy('id');
 
@@ -122,26 +118,26 @@ class UpdateReparacionRequest extends FormRequest
                         continue;
                     }
 
-                    $detail = $partDetails->get((int) ($item['detalle_id'] ?? 0));
+                    $part = $parts->get((int) ($item['repuesto_id'] ?? 0));
                     $quantity = (int) ($item['cantidad'] ?? 0);
 
-                    if (! $detail instanceof DetalleOrdenTrabajo || ! $detail->repuesto) {
+                    if (! $part instanceof Repuesto) {
                         continue;
                     }
 
-                    if ($quantity > $detail->cantidad) {
+                    if (! $part->activo && ! $currentQuantities->has($part->id)) {
                         $validator->errors()->add(
-                            "repuestos.{$index}.cantidad",
-                            "La cantidad utilizada de {$detail->descripcion} supera la autorizada en la OT ({$detail->cantidad}).",
+                            "repuestos.{$index}.repuesto_id",
+                            "El repuesto {$part->nombre} no se encuentra activo.",
                         );
                     }
 
-                    $availableStock = $detail->repuesto->stock + (int) ($currentQuantities[$detail->repuesto_id] ?? 0);
+                    $availableStock = $part->stock + (int) ($currentQuantities[$part->id] ?? 0);
 
                     if ($quantity > $availableStock) {
                         $validator->errors()->add(
                             "repuestos.{$index}.cantidad",
-                            "La cantidad utilizada de {$detail->descripcion} supera el stock disponible ({$availableStock}).",
+                            "La cantidad utilizada de {$part->nombre} supera el stock disponible ({$availableStock}).",
                         );
                     }
                 }
@@ -167,7 +163,7 @@ class UpdateReparacionRequest extends FormRequest
             'servicios.required' => 'Seleccioná al menos un servicio realizado.',
             'servicios.min' => 'Seleccioná al menos un servicio realizado.',
             'servicios.*.exists' => 'Uno de los servicios no pertenece a la Orden de Trabajo.',
-            'repuestos.*.detalle_id.exists' => 'Uno de los repuestos no pertenece a la Orden de Trabajo.',
+            'repuestos.*.repuesto_id.exists' => 'Uno de los repuestos seleccionados no existe.',
             'repuestos.*.cantidad.min' => 'La cantidad utilizada debe ser mayor a cero.',
         ];
     }
